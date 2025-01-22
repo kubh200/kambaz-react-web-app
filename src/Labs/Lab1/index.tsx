@@ -222,7 +222,7 @@ export default function Lab1() {
 
         <h4>Anchor tag</h4>
         <a href="https://www.wikipedia.org/" id="wikipedia">Wikipedia</a><br/>
-        <a href="https://github.com/kubh200" id="github">Github</a><br/>
+        <a href="https://github.com/kubh200/kambaz-react-web-app" id="github">Github</a><br/>
     </div>
   );}
   
