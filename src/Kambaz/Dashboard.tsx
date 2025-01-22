@@ -7,7 +7,7 @@ export default function Dashboard() {
       <div id="wd-dashboard-courses">
         <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/1234/Home" className="wd-dashboard-course-link" >
-            <img src="src\assets\react-js-banner-big-1.jpg" width={200} />
+            <img src="\images\react-js-banner-big-1.jpg" width={200} />
             <div>
               <h5> CS1234 React JS </h5>
               <p className="wd-dashboard-course-title"> Full Stack software developer  </p>
@@ -17,7 +17,7 @@ export default function Dashboard() {
         </div>
         <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/1234/Home" className="wd-dashboard-course-link" >
-            <img src="src\assets\react-js-banner-big-1.jpg" width={200} />
+            <img src="\images\react-js-banner-big-1.jpg" width={200} />
             <div>
               <h5> CS1234 React JS </h5>
               <p className="wd-dashboard-course-title"> Full Stack software developer  </p>
@@ -27,7 +27,7 @@ export default function Dashboard() {
         </div>
         <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/1234/Home" className="wd-dashboard-course-link" >
-            <img src="src\assets\react-js-banner-big-1.jpg" width={200} />
+            <img src="\images\react-js-banner-big-1.jpg" width={200} />
             <div>
               <h5> CS1234 React JS </h5>
               <p className="wd-dashboard-course-title"> Full Stack software developer  </p>
@@ -37,7 +37,7 @@ export default function Dashboard() {
         </div>
         <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/1234/Home" className="wd-dashboard-course-link" >
-            <img src="src\assets\react-js-banner-big-1.jpg" width={200} />
+            <img src="\images\react-js-banner-big-1.jpg" width={200} />
             <div>
               <h5> CS1234 React JS </h5>
               <p className="wd-dashboard-course-title"> Full Stack software developer  </p>
@@ -47,7 +47,7 @@ export default function Dashboard() {
         </div>
         <div className="wd-dashboard-course">
           <Link to="/Kambaz/Courses/1234/Home" className="wd-dashboard-course-link" >
-            <img src="src\assets\react-js-banner-big-1.jpg" width={200} />
+            <img src="\images\react-js-banner-big-1.jpg" width={200} />
             <div>
               <h5> CS1234 React JS </h5>
               <p className="wd-dashboard-course-title"> Full Stack software developer  </p>
