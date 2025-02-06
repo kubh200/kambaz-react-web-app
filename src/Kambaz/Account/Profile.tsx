@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { Form, FormGroup, FormControl, Button, Row, Col } from "react-bootstrap";
+import { Form, FormGroup, FormControl, Button } from "react-bootstrap";
 export default function Profile() {
   return (
     <div className="container py-3" id="wd-profile-screen">
