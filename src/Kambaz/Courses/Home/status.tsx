@@ -1,16 +1,35 @@
+import { Button} from "react-bootstrap";
+import { MdDoNotDisturbAlt } from "react-icons/md";
+import { FaCheckCircle, FaHome } from "react-icons/fa";
+import { BiImport } from "react-icons/bi";
+import { LiaFileImportSolid } from "react-icons/lia";
+import { MdBarChart } from "react-icons/md";
+import { CiBullhorn, CiBellOn } from "react-icons/ci";
 export default function CourseStatus() {
     return (
-      <div id="wd-course-status">
+      <div id="wd-course-status" style={{ width: "350px" }}>
         <h2>Course Status</h2>
-        <button>Unpublish</button> <button>Publish</button><br />
+        <div className="d-flex">
+          <div className="w-50 pe-1">
+            <Button variant="secondary" size="lg" className="w-100 text-nowrap ">
+              <MdDoNotDisturbAlt className="me-2 fs-5" /> Unpublish </Button> </div>
+          <div className="w-50">
+            <Button variant="success" size="lg" className="w-100">
+              <FaCheckCircle className="me-2 fs-5" /> Publish </Button> </div>
+        </div>
         <br />
-        <button>Importing Existing Content</button> <br />
-        <button>Import from Commons</button><br />
-        <button>Choose Home Page</button><br />
-        <button>View Course Stream</button><br />
-        <button>New Announcement</button><br />
-        <button>NewAnalytics</button><br />
-        <button>View Course Notifications</button>
-      </div> );}
-  
-  
+        <Button variant="secondary" size="lg" className="w-100 mt-1 text-start">
+          <BiImport className="me-2 fs-5" /> Import Existing Content </Button>
+        <Button variant="secondary" size="lg" className="w-100 mt-1 text-start">
+          <LiaFileImportSolid className="me-2 fs-5" /> Import from Commons </Button>
+        <Button variant="secondary" size="lg" className="w-100 mt-1 text-start">
+          <FaHome className="me-2 fs-5" /> Choose Home Page </Button>
+        <Button variant="secondary" size="lg" className="w-100 mt-1 text-start">
+          <MdBarChart className="me-2 fs-5" /> View Course Screen </Button>
+        <Button variant="secondary" size="lg" className="w-100 mt-1 text-start">
+          <CiBullhorn className="me-2 fs-5" /> New Acouncement </Button>
+        <Button variant="secondary" size="lg" className="w-100 mt-1 text-start">
+          <MdBarChart className="me-2 fs-5" /> New Analytics </Button>
+        <Button variant="secondary" size="lg" className="w-100 mt-1 text-start">
+          <CiBellOn className="me-2 fs-5" /> View Course Notifications </Button>
+    </div> );}
