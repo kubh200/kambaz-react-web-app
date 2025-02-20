@@ -1,4 +1,5 @@
-import { Form, FormGroup, FormControl, Button } from "react-bootstrap";
+import { Form, FormGroup, FormControl} from "react-bootstrap";
+import { Link } from "react-router-dom";
 export default function Profile() {
   return (
     <div className="container py-3" id="wd-profile-screen">
@@ -17,7 +18,7 @@ export default function Profile() {
           <option value="student">Student</option>
         </Form.Select>
       </FormGroup>
-      <Button variant="danger">Sign Out</Button>
+      <Link id="wd-signout-btn"to="/Kambaz/Account/Signin" className="btn btn-danger w-40 mb-2"> Sign Out </Link><br />
     </div>
 );}
 

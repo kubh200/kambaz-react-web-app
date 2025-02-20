@@ -3,6 +3,7 @@ import ForegroundColors from "./ForegroundColors";
 import BackgroundColors from "./BackgroundColors";
 import Border from "./Borders";
 import Padding from "./Padding";
+import Margins from "./Margins";
 import Corners from "./Corners";
 import Dimensions from "./Dimensions";
 import Position from "./Positions";
@@ -73,6 +74,7 @@ export default function Lab2() {
       <BackgroundColors />
       <Border />
       <Padding />
+      <Margins />
       <Corners />
       <Dimensions />
       <Position />
