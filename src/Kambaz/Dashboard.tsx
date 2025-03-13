@@ -84,14 +84,7 @@ export default function Dashboard(
       <h2 id="wd-dashboard-published">Published Courses ({filteredCourses.length})</h2> <hr />
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4">
-          {filteredCourses
-          // .filter((course: any) =>
-          //   enrollments.some(
-          //     (enrollment) =>
-          //       enrollment.user === currentUser._id &&
-          //       enrollment.course === course._id
-          //      ))      
-          .map((course: any) => (
+          {filteredCourses.map((course: any) => (
             <Col className="wd-dashboard-course" style={{ width: "300px" }}>
               <Card>
                 {/* <Link to={`/Kambaz/Courses/${course._id}/Home`}
@@ -125,6 +118,7 @@ export default function Dashboard(
                         <Button
                           onClick={(event) => {
                             event.preventDefault();
+                            event.stopPropagation()
                             deleteCourse(course._id);
                           }}
                           className="btn btn-danger float-end"
@@ -136,6 +130,7 @@ export default function Dashboard(
                           id="wd-edit-course-click"
                           onClick={(event) => {
                             event.preventDefault();
+                            event.stopPropagation()
                             setCourse(course);
                           }}
                           className="btn btn-warning me-2 float-end"
