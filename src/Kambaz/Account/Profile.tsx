@@ -37,7 +37,7 @@
 //       <Link id="wd-signout-btn"to="/Kambaz/Account/Signin" className="btn btn-danger w-40 mb-2"> Sign Out </Link><br />
 //     </div>
 // );}
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "./reducer";
