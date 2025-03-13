@@ -1,11 +1,10 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { BsGripVertical } from "react-icons/bs";
 import { ListGroup } from "react-bootstrap";
 import AssignmentControlButton from "./AssignmentControlButton";
 import AssignmentControl from "./AssignmentControl";
 import { LuNotebookPen } from "react-icons/lu";
 import LessonControlButtons from "./LessonControlButtons";
-import * as db from "../../Database";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, deleteAssignment, updateAssignment} from "./reducer";
