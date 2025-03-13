@@ -1,11 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
-import * as db from "./Database";
+import { useNavigate } from "react-router-dom";
 import { Row, Col, Card, Button } from "react-bootstrap";
 import { useDispatch, useSelector} from "react-redux";
 import { Dispatch, SetStateAction, useState } from "react";
 import { FormControl } from "react-bootstrap";
 import { enrollCourse, unenrollCourse } from "./enrollmentReducer";
-import { Navigate} from "react-router-dom"
 interface DashboardProps {
   courses: any[];
   course: any;
