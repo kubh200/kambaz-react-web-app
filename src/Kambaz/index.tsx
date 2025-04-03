@@ -5,20 +5,13 @@ import KambazNavigation from "./Navigation";
 import Courses from "./Courses";
 import PeopleTable from "./Courses/People/Table";
 import "./styles.css";
-// import * as db from "./Database";
 import { useEffect, useState } from "react";
-// import { v4 as uuidv4 } from "uuid"
 import ProtectedRoute from "./Account/ProtectedRoute";
-// import { addCourse, deleteCourse, updateCourse } from "./Courses/reducer";
 import { useSelector } from "react-redux";
 import * as userClient from "./Account/client";
 import * as courseClient from "./Courses/client";
 export default function Kambaz() {
-  // const dispatch = useDispatch();
-  // Retrieve courses from Redux store (coursesReducer)
-  // const courses = useSelector((state: any) => state.coursesReducer.courses);
 
-  // Local state for the course being created or edited (ephemeral UI state)
   const [course, setCourse] = useState<any>({
     _id: "1234",
     name: "New Course",
@@ -42,7 +35,6 @@ export default function Kambaz() {
   }, [currentUser]);
 
 
-  // Handler for adding a new course via Redux
   const addNewCourse = async () => {
     try {
       console.log("🧪 Creating course with:", course); // Debug
@@ -62,13 +54,9 @@ export default function Kambaz() {
     }
   };
 
-  // Handler for deleting a course (using Redux action)
-  // const deleteCourseHandler = (courseId: string) => {
-  //   dispatch(deleteCourse(courseId));
-  // };
+
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
-    // setCourses(courses.filter((course) => course._id !== courseId));
     if (status === 200) {
       setCourses(courses.filter((course) => course._id !== courseId));
     } else {
@@ -77,10 +65,6 @@ export default function Kambaz() {
   };
 
 
-  // Handler for updating a course via Redux
-  // const updateCourseHandler = () => {
-  //   dispatch(updateCourse(course));
-  // };
   const updateCourse = async () => {
     try {
       const updated = await courseClient.updateCourse(course);

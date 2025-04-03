@@ -25,13 +25,6 @@ export default function Modules() {
       fetchModules();
     }, []);
 
-    // const createModuleForCourse = async () => {
-    //   if (!cid) return;
-    //   const newModule = { name: moduleName, course: cid };
-    //   console.log("✅ Created new module from server:", newModule);
-    //   const module = await coursesClient.createModuleForCourse(cid, newModule);
-    //   dispatch(addModule(module));
-    // };
     const createModuleForCourse = async () => {
       if (!cid || !moduleName.trim()) return;
     

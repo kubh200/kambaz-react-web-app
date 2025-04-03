@@ -3,7 +3,6 @@ import { Row, Col, Card, Button } from "react-bootstrap";
 import { useDispatch, useSelector} from "react-redux";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FormControl } from "react-bootstrap";
-// import { enrollCourse, unenrollCourse } from "./enrollmentReducer";
 import {
   setEnrollments,
   enrollCourse,
@@ -30,9 +29,7 @@ export default function Dashboard(
     updateCourse,
   }: DashboardProps) 
   {
-  // Retrieve current user from Redux accountReducer
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  // const { enrollments } = db;
   const isFaculty = currentUser?.role === "FACULTY";
   const [showAllCourses, setShowAllCourses] = useState(false);
   const { enrollments } = useSelector((state: any) => state.enrollmentReducer);

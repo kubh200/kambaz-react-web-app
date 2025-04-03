@@ -26,24 +26,6 @@ export default function Assignments() {
   const [showEditor, setShowEditor] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState<any>(null);
 
-  
-
-  // A function that dispatches "addAssignment"
-  // const handleAddAssignment  = () => {
-  //   dispatch(
-  //     addAssignment({
-  //       title: assignmentTitle,
-  //       description: assignmentDescription,
-  //       points: Number(points),
-  //       dueDate,
-  //       availableFrom,
-  //       availableUntil,
-  //       course: cid,
-  //     })
-  //   );
-  //   resetForm();
-  // };
-
   const handleAddAssignment = async () => {
     try {
       if (!cid) return;

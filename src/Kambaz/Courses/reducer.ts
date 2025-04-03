@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { courses } from "../Database"; // Replace or remove if you no longer import from Database
+import { courses } from "../Database"; 
 import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
-  courses: courses, // initial courses data from the Database
+  courses: courses, 
 };
 
 const coursesSlice = createSlice({
@@ -14,7 +14,6 @@ const coursesSlice = createSlice({
       const newCourse: any = {
         _id: uuidv4(),
         editing: false,
-        // Spread the provided course properties (name, number, startDate, etc.)
         ...course,
       };
       state.courses = [...state.courses, newCourse] as any;
