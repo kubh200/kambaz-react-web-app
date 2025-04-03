@@ -57,11 +57,12 @@ export default function Kambaz() {
 
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
-    if (status === 200) {
-      setCourses(courses.filter((course) => course._id !== courseId));
-    } else {
-      console.error("❌ Failed to delete course:", status);
-    }
+    // if (status === 200) {
+    //   setCourses(courses.filter((course) => course._id !== courseId));
+    // } else {
+    //   console.error("❌ Failed to delete course:", status);
+    // }
+    setCourses(courses.filter((course) => course._id !== courseId));
   };
 
 
