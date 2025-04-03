@@ -25,8 +25,8 @@ export default function KambazNavigation() {
         <br />
         Account
       </ListGroup.Item>
-      {links.map((link) => (
-        <ListGroup.Item key={link.path} as={Link} to={link.path} className={`bg-black text-center border-0
+      {links.map((link, index) => (
+        <ListGroup.Item key={`${link.path}-${index}`} as={Link} to={link.path} className={`bg-black text-center border-0
               ${pathname.includes(link.label) ? "text-danger bg-white" : "text-white bg-black"}`}>
           {link.icon({ className: "fs-1 text-danger"})}
           <br />

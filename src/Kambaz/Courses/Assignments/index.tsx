@@ -5,17 +5,17 @@ import AssignmentControlButton from "./AssignmentControlButton";
 import AssignmentControl from "./AssignmentControl";
 import { LuNotebookPen } from "react-icons/lu";
 import LessonControlButtons from "./LessonControlButtons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addAssignment, deleteAssignment, updateAssignment} from "./reducer";
+import { setAssignments, addAssignment, deleteAssignment, updateAssignment} from "./reducer";
 import AssignmentEditor from "./Editor";
+import * as assignmentClient from "./client";
 export default function Assignments() {
   const { cid} = useParams(); 
+  const dispatch = useDispatch();
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser?.role === "FACULTY";
-  // const assignments = db.assignments.filter((assignment) => assignment.course === cid);
-  // Local states for the new assignment
   const [assignmentTitle, setAssignmentTitle] = useState("");
   const [assignmentDescription, setAssignmentDescription] = useState("");
   const [points, setPoints] = useState("100");
@@ -26,23 +26,55 @@ export default function Assignments() {
   const [showEditor, setShowEditor] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState<any>(null);
 
-  const dispatch = useDispatch();
+  
 
   // A function that dispatches "addAssignment"
-  const handleAddAssignment  = () => {
-    dispatch(
-      addAssignment({
+  // const handleAddAssignment  = () => {
+  //   dispatch(
+  //     addAssignment({
+  //       title: assignmentTitle,
+  //       description: assignmentDescription,
+  //       points: Number(points),
+  //       dueDate,
+  //       availableFrom,
+  //       availableUntil,
+  //       course: cid,
+  //     })
+  //   );
+  //   resetForm();
+  // };
+
+  const handleAddAssignment = async () => {
+    try {
+      if (!cid) return;
+      const newAssignment = {
         title: assignmentTitle,
         description: assignmentDescription,
         points: Number(points),
         dueDate,
         availableFrom,
         availableUntil,
-        course: cid,
-      })
-    );
-    resetForm();
+      };
+      const created = await assignmentClient.createAssignment(cid, newAssignment);
+      dispatch(addAssignment(created));
+      resetForm();
+    } catch (e) {
+      console.error("❌ Failed to add assignment:", e);
+    }
   };
+
+  const fetchAssignments = async () => {
+    try {
+      if (!cid) return;
+      const data = await assignmentClient.fetchAssignments(cid);
+      dispatch(setAssignments(data));
+    } catch (e) {
+      console.error("❌ Error loading assignments:", e);
+    }
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
 
    // Helper to reset form fields to default values
    const resetForm = () => {
@@ -79,9 +111,24 @@ export default function Assignments() {
   };
 
   // Handler for saving the edited assignment
-  const handleUpdateAssignment = () => {
-    dispatch(
-      updateAssignment({
+  // const handleUpdateAssignment = () => {
+  //   dispatch(
+  //     updateAssignment({
+  //       ...selectedAssignment,
+  //       title: assignmentTitle,
+  //       description: assignmentDescription,
+  //       points: Number(points),
+  //       dueDate,
+  //       availableFrom,
+  //       availableUntil,
+  //     })
+  //   );
+  //   closeEditor();
+  // };
+
+  const handleUpdateAssignment = async () => {
+    try {
+      const updated = {
         ...selectedAssignment,
         title: assignmentTitle,
         description: assignmentDescription,
@@ -89,14 +136,27 @@ export default function Assignments() {
         dueDate,
         availableFrom,
         availableUntil,
-      })
-    );
-    closeEditor();
+      };
+      const saved = await assignmentClient.updateAssignment(updated);
+      dispatch(updateAssignment(saved));
+      closeEditor();
+    } catch (e) {
+      console.error("❌ Failed to update assignment:", e);
+    }
   };
 
-  const handleDeleteAssignment = (assignmentId: string) => {
-    dispatch(deleteAssignment(assignmentId));
+  const handleDeleteAssignment = async (assignmentId: string) => {
+    try {
+      await assignmentClient.deleteAssignment(assignmentId);
+      dispatch(deleteAssignment(assignmentId));
+    } catch (e) {
+      console.error("❌ Failed to delete assignment:", e);
+    }
   };
+
+  // const handleDeleteAssignment = (assignmentId: string) => {
+  //   dispatch(deleteAssignment(assignmentId));
+  // };
   return (
     <div>
       <AssignmentControl
