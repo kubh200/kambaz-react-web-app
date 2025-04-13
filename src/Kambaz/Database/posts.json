@@ -1,0 +1,19 @@
+[
+    {
+        "_id": "p1",
+        "summary": "Finish React‑Bootstrap guide",
+        "details": "Finish writing the React‑Bootstrap guide for the docs site.",
+        "authorRole": "STUDENT",
+        "content": "Finish writing the React‑Bootstrap guide for the docs site.",
+        "createdAt": "2024-04-09T15:00:00.000Z",
+        "updatedAt": "2024-04-09T15:00:00.000Z",   
+        "folders": ["inbox"],
+        "type": "NOTE",
+        "author": "u1",
+        "course": "c1",
+        "visibility": "ENTIRE_CLASS",
+        "visibleTo": [],
+        "views": [],
+        "answers": []
+      }
+  ]
