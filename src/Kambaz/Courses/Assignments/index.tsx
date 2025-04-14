@@ -6,14 +6,14 @@ import AssignmentControl from "./AssignmentControl";
 import { LuNotebookPen } from "react-icons/lu";
 import LessonControlButtons from "./LessonControlButtons";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setAssignments, addAssignment, deleteAssignment, updateAssignment} from "./reducer";
+import { useSelector } from "react-redux";
+// import { setAssignments, addAssignment, deleteAssignment, updateAssignment} from "./reducer";
 import AssignmentEditor from "./Editor";
 import * as assignmentClient from "./client";
 export default function Assignments() {
   const { cid} = useParams(); 
-  const dispatch = useDispatch();
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  // const dispatch = useDispatch();
+  // const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser?.role === "FACULTY";
   const [assignmentTitle, setAssignmentTitle] = useState("");
@@ -25,6 +25,7 @@ export default function Assignments() {
 
   const [showEditor, setShowEditor] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState<any>(null);
+  const [assignments, setAssignments] = useState<any[]>([]);
 
   const handleAddAssignment = async () => {
     try {
@@ -37,26 +38,37 @@ export default function Assignments() {
         availableFrom,
         availableUntil,
       };
+      // const created = await assignmentClient.createAssignment(cid, newAssignment);
+      // dispatch(addAssignment(created));
       const created = await assignmentClient.createAssignment(cid, newAssignment);
-      dispatch(addAssignment(created));
+      setAssignments([...assignments, created]);
       resetForm();
     } catch (e) {
       console.error("❌ Failed to add assignment:", e);
     }
   };
 
+  // const fetchAssignments = async () => {
+  //   try {
+  //     if (!cid) return;
+  //     const data = await assignmentClient.fetchAssignments(cid);
+  //     dispatch(setAssignments(data));
+  //   } catch (e) {
+  //     console.error("❌ Error loading assignments:", e);
+  //   }
+  // };
   const fetchAssignments = async () => {
     try {
       if (!cid) return;
       const data = await assignmentClient.fetchAssignments(cid);
-      dispatch(setAssignments(data));
+      setAssignments(data);
     } catch (e) {
       console.error("❌ Error loading assignments:", e);
     }
   };
   useEffect(() => {
     fetchAssignments();
-  }, []);
+  }, [cid]);
 
    // Helper to reset form fields to default values
    const resetForm = () => {
@@ -119,8 +131,10 @@ export default function Assignments() {
         availableFrom,
         availableUntil,
       };
+      // const saved = await assignmentClient.updateAssignment(updated);
+      // dispatch(updateAssignment(saved));
       const saved = await assignmentClient.updateAssignment(updated);
-      dispatch(updateAssignment(saved));
+      setAssignments(assignments.map(a => a._id === saved._id ? saved : a));
       closeEditor();
     } catch (e) {
       console.error("❌ Failed to update assignment:", e);
@@ -129,8 +143,10 @@ export default function Assignments() {
 
   const handleDeleteAssignment = async (assignmentId: string) => {
     try {
+      // await assignmentClient.deleteAssignment(assignmentId);
+      // dispatch(deleteAssignment(assignmentId));
       await assignmentClient.deleteAssignment(assignmentId);
-      dispatch(deleteAssignment(assignmentId));
+      setAssignments(assignments.filter(a => a._id !== assignmentId));
     } catch (e) {
       console.error("❌ Failed to delete assignment:", e);
     }
@@ -165,7 +181,8 @@ export default function Assignments() {
           </div>
           <ListGroup className="wd-assignments rounded-0">
             {assignments.length > 0 ? (
-              assignments.filter((assignment: any) => assignment.course === cid).map((assignment : any) => (
+              // assignments.filter((assignment: any) => assignment.course === cid).map((assignment : any) => (
+              assignments.map((assignment) => (
                 <ListGroup.Item key={assignment._id} className="wd-lesson p-3 ps-1 d-flex align-items-start">
                   <div className="d-flex align-items-center">
                     <BsGripVertical className="me-2 fs-3 flex-shrink-0" />
