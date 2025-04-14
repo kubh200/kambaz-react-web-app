@@ -25,9 +25,12 @@ const modulesSlice = createSlice({
   name: "modules",
   initialState,
   reducers: {
-    setModules: (state, action: PayloadAction<Module[]>) => {
-      state.modules = action.payload;
-    },
+    // setModules: (state, action: PayloadAction<Module[]>) => {
+    //   state.modules = action.payload;
+    // },
+    setModules: (state, { payload: modules }) => {
+      state.modules = modules;
+    }, 
 
     addModule: (state, action: PayloadAction<Module>) => {
       state.modules.push(action.payload);

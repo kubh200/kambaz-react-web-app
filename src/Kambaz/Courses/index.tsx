@@ -6,11 +6,32 @@ import { Navigate, Route, Routes, useParams, useLocation} from "react-router";
 import { FaAlignJustify } from "react-icons/fa";
 import { Row, Col } from "react-bootstrap";
 import PeopleTable from "./People/Table";
+import { useEffect, useState } from "react";
+import * as courseClient from "./client";
 // import Pazza from "./Pazza"
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
   const { pathname } = useLocation();
+  const CoursePeople = () => {
+    const { cid } = useParams();
+    const [users, setUsers] = useState<any[]>([]);
+  
+    useEffect(() => {
+      if (!cid) return;
+      const loadUsers = async () => {
+        try {
+          const data = await courseClient.findUsersForCourse(cid);
+          setUsers(data.filter((u: any) => u !== null && u._id));
+        } catch (err) {
+          console.error(`Failed to load users for course ${cid}:`, err);
+        }
+      };
+      loadUsers();
+    }, [cid]);
+  
+    return <PeopleTable users={users} />;
+  };
   return (
     <div id="wd-courses">
       <h2 className="text-danger">
@@ -31,7 +52,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
             <Route path="Assignments" element={<Assignments />} />
             {/* <Route path="Assignments/:aid" element={<AssignmentEditor />} /> */}
             {/* <Route path="Pazza/*" element={<Pazza />} /> */}
-            <Route path="People" element={<PeopleTable />} />
+            <Route path="People" element={<CoursePeople />} />
           </Routes>
         </Col>
       </Row>
