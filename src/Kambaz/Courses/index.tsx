@@ -8,7 +8,7 @@ import { Row, Col } from "react-bootstrap";
 import PeopleTable from "./People/Table";
 import { useEffect, useState } from "react";
 import * as courseClient from "./client";
-// import Pazza from "./Pazza"
+import Pazza from "./Pazza"
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
@@ -51,7 +51,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
             <Route path="Modules" element={<Modules />} />
             <Route path="Assignments" element={<Assignments />} />
             {/* <Route path="Assignments/:aid" element={<AssignmentEditor />} /> */}
-            {/* <Route path="Pazza/*" element={<Pazza />} /> */}
+            <Route path="Pazza" element={<Pazza />} />
             <Route path="People" element={<CoursePeople />} />
           </Routes>
         </Col>

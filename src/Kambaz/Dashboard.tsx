@@ -138,23 +138,20 @@ export default function Dashboard(
       {isFaculty && (<FormControl value={course.name} className="mb-2" onChange={(e) => setCourse({ ...course, name: e.target.value })} />)}
       {isFaculty && (<FormControl as="textarea" value={course.description} rows={3} onChange={(e) => setCourse({ ...course, description: e.target.value })}/>)}
       <hr />
-      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
+      <h2 id="wd-dashboard-published">Published Courses ({courses?.length || 0})</h2> <hr />
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4">
-          {courses.map((course: any) => (
-            <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+          {courses?.map((course: any) => (
+            <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
               <Card>
-                {/* <Link to={`/Kambaz/Courses/${course._id}/Home`}
-                      className="wd-dashboard-course-link text-decoration-none text-dark" > */}
                 <div onClick={() => handleCourseNavigation(course._id)} className="wd-dashboard-course-link text-decoration-none text-dark"
                   style={{ cursor: "pointer" }}> 
                   <Card.Img src="/images/react-js-banner-big-1.jpg" variant="top" width="100%" height={160} />
                   <Card.Body className="card-body">
-                  
                     <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                      {course.name} </Card.Title>
+                      {course?.name || 'Untitled Course'} </Card.Title>
                     <Card.Text className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                      {course.description} </Card.Text>
+                      {course?.description || 'No description available'} </Card.Text>
                     <Button variant="primary"> Go </Button>
                     {isFaculty && (
                       <>
@@ -183,7 +180,6 @@ export default function Dashboard(
                       </>
                     )}
                   </Card.Body>
-                      {/* </Link> */}
                 </div>
                 {!isFaculty && (
                   <div className="text-center mb-2">

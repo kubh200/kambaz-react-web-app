@@ -1,0 +1,322 @@
+[
+  {
+    "_id": "rs101_hw1",
+    "name": "hw1",
+    "course": "RS101"
+  },
+  {
+    "_id": "rs101_hw2",
+    "name": "hw2",
+    "course": "RS101"
+  },
+  {
+    "_id": "rs101_hw3",
+    "name": "hw3",
+    "course": "RS101"
+  },
+  {
+    "_id": "rs101_project",
+    "name": "project",
+    "course": "RS101"
+  },
+  {
+    "_id": "rs101_exam",
+    "name": "exam",
+    "course": "RS101"
+  },
+  {
+    "_id": "rs101_logistics",
+    "name": "logistics",
+    "course": "RS101"
+  },
+  {
+    "_id": "rs101_office_hours",
+    "name": "office_hours",
+    "course": "RS101"
+  },
+  {
+    "_id": "rs101_other",
+    "name": "other",
+    "course": "RS101"
+  },
+  {
+    "_id": "rs102_hw1",
+    "name": "hw1",
+    "course": "RS102"
+  },
+  {
+    "_id": "rs102_hw2",
+    "name": "hw2",
+    "course": "RS102"
+  },
+  {
+    "_id": "rs102_hw3",
+    "name": "hw3",
+    "course": "RS102"
+  },
+  {
+    "_id": "rs102_project",
+    "name": "project",
+    "course": "RS102"
+  },
+  {
+    "_id": "rs102_exam",
+    "name": "exam",
+    "course": "RS102"
+  },
+  {
+    "_id": "rs102_logistics",
+    "name": "logistics",
+    "course": "RS102"
+  },
+  {
+    "_id": "rs102_office_hours",
+    "name": "office_hours",
+    "course": "RS102"
+  },
+  {
+    "_id": "rs102_other",
+    "name": "other",
+    "course": "RS102"
+  },
+  {
+    "_id": "rs103_hw1",
+    "name": "hw1",
+    "course": "RS103"
+  },
+  {
+    "_id": "rs103_hw2",
+    "name": "hw2",
+    "course": "RS103"
+  },
+  {
+    "_id": "rs103_hw3",
+    "name": "hw3",
+    "course": "RS103"
+  },
+  {
+    "_id": "rs103_project",
+    "name": "project",
+    "course": "RS103"
+  },
+  {
+    "_id": "rs103_exam",
+    "name": "exam",
+    "course": "RS103"
+  },
+  {
+    "_id": "rs103_logistics",
+    "name": "logistics",
+    "course": "RS103"
+  },
+  {
+    "_id": "rs103_office_hours",
+    "name": "office_hours",
+    "course": "RS103"
+  },
+  {
+    "_id": "rs103_other",
+    "name": "other",
+    "course": "RS103"
+  },
+  {
+    "_id": "rs104_hw1",
+    "name": "hw1",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs104_hw2",
+    "name": "hw2",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs104_hw3",
+    "name": "hw3",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs104_project",
+    "name": "project",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs104_exam",
+    "name": "exam",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs104_logistics",
+    "name": "logistics",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs104_office_hours",
+    "name": "office_hours",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs104_other",
+    "name": "other",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs105_hw1",
+    "name": "hw1",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_hw2",
+    "name": "hw2",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_hw3",
+    "name": "hw3",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_project",
+    "name": "project",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_exam",
+    "name": "exam",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_logistics",
+    "name": "logistics",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_office_hours",
+    "name": "office_hours",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_other",
+    "name": "other",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs106_hw1",
+    "name": "hw1",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs106_hw2",
+    "name": "hw2",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs106_hw3",
+    "name": "hw3",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs106_project",
+    "name": "project",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs106_exam",
+    "name": "exam",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs106_logistics",
+    "name": "logistics",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs106_office_hours",
+    "name": "office_hours",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs106_other",
+    "name": "other",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs107_hw1",
+    "name": "hw1",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs107_hw2",
+    "name": "hw2",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs107_hw3",
+    "name": "hw3",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs107_project",
+    "name": "project",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs107_exam",
+    "name": "exam",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs107_logistics",
+    "name": "logistics",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs107_office_hours",
+    "name": "office_hours",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs107_other",
+    "name": "other",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs108_hw1",
+    "name": "hw1",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_hw2",
+    "name": "hw2",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_hw3",
+    "name": "hw3",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_project",
+    "name": "project",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_exam",
+    "name": "exam",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_logistics",
+    "name": "logistics",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_office_hours",
+    "name": "office_hours",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_other",
+    "name": "other",
+    "course": "RS108"
+  }
+]

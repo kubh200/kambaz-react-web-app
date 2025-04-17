@@ -1,19 +1,154 @@
 [
-    {
-        "_id": "p1",
-        "summary": "Finish React‑Bootstrap guide",
-        "details": "Finish writing the React‑Bootstrap guide for the docs site.",
-        "authorRole": "STUDENT",
-        "content": "Finish writing the React‑Bootstrap guide for the docs site.",
-        "createdAt": "2024-04-09T15:00:00.000Z",
-        "updatedAt": "2024-04-09T15:00:00.000Z",   
-        "folders": ["inbox"],
-        "type": "NOTE",
-        "author": "u1",
-        "course": "c1",
-        "visibility": "ENTIRE_CLASS",
-        "visibleTo": [],
-        "views": [],
-        "answers": []
-      }
-  ]
+  {
+    "_id": "p1",
+    "summary": "Rocket Propulsion Introduction",
+    "details": "An introduction to rocket propulsion principles and engine types.",
+    "authorRole": "FACULTY",
+    "content": "This post provides a basic overview of rocket propulsion fundamentals.",
+    "createdAt": "2025-04-14T15:00:00.000Z",
+    "updatedAt": "2025-04-14T15:00:00.000Z",
+    "type": "NOTE",
+    "author": "u1",
+    "course": "RS101",
+    "visibility": "ENTIRE_CLASS",
+    "visibleTo": [],
+    "views": [],
+    "answers": [],
+    "folders": [
+      "rs101_hw1"
+    ]
+  },
+  {
+    "_id": "p2",
+    "summary": "Aerodynamics Overview",
+    "details": "A discussion on airflow, lift, drag, and aircraft design principles.",
+    "authorRole": "FACULTY",
+    "content": "This post covers the essential concepts of aerodynamics.",
+    "createdAt": "2024-04-10T15:00:00.000Z",
+    "updatedAt": "2024-04-10T15:00:00.000Z",
+    "type": "NOTE",
+    "author": "u2",
+    "course": "RS102",
+    "visibility": "ENTIRE_CLASS",
+    "visibleTo": [],
+    "views": [],
+    "answers": [],
+    "folders": [
+      "rs102_hw1"
+    ]
+  },
+  {
+    "_id": "p3",
+    "summary": "Spacecraft Design Challenges",
+    "details": "A look into the engineering challenges in modern spacecraft design.",
+    "authorRole": "FACULTY",
+    "content": "This discussion explains key design challenges and considerations for spacecraft.",
+    "createdAt": "2024-04-11T15:00:00.000Z",
+    "updatedAt": "2024-04-11T15:00:00.000Z",
+    "type": "NOTE",
+    "author": "u3",
+    "course": "RS103",
+    "visibility": "ENTIRE_CLASS",
+    "visibleTo": [],
+    "views": [],
+    "answers": [],
+    "folders": [
+      "rs103_hw1"
+    ]
+  },
+  {
+    "_id": "p4",
+    "summary": "Organic Reaction Mechanisms",
+    "details": "Discussion on various reaction mechanisms in organic chemistry.",
+    "authorRole": "FACULTY",
+    "content": "This post explores critical organic reaction mechanisms with examples.",
+    "createdAt": "2024-04-12T15:00:00.000Z",
+    "updatedAt": "2024-04-12T15:00:00.000Z",
+    "type": "QUESTION",
+    "author": "u4",
+    "course": "RS104",
+    "visibility": "ENTIRE_CLASS",
+    "visibleTo": [],
+    "views": [],
+    "answers": [],
+    "folders": [
+      "rs104_hw1"
+    ]
+  },
+  {
+    "_id": "p5",
+    "summary": "Inorganic Compound Synthesis",
+    "details": "An overview of techniques used in the synthesis of inorganic compounds.",
+    "authorRole": "FACULTY",
+    "content": "A detailed look at methods for synthesizing inorganic compounds.",
+    "createdAt": "2024-04-13T15:00:00.000Z",
+    "updatedAt": "2024-04-13T15:00:00.000Z",
+    "type": "NOTE",
+    "author": "u5",
+    "course": "RS105",
+    "visibility": "ENTIRE_CLASS",
+    "visibleTo": [],
+    "views": [],
+    "answers": [],
+    "folders": [
+      "rs105_hw1"
+    ]
+  },
+  {
+    "_id": "p6",
+    "summary": "Physical Chemistry Principles",
+    "details": "An explanation of key principles such as thermodynamics and kinetics.",
+    "authorRole": "FACULTY",
+    "content": "This post provides an overview of physical chemistry concepts in a classroom setting.",
+    "createdAt": "2024-04-14T15:00:00.000Z",
+    "updatedAt": "2024-04-14T15:00:00.000Z",
+    "type": "NOTE",
+    "author": "u6",
+    "course": "RS106",
+    "visibility": "ENTIRE_CLASS",
+    "visibleTo": [],
+    "views": [],
+    "answers": [],
+    "folders": [
+      "rs106_hw1"
+    ]
+  },
+  {
+    "_id": "p7",
+    "summary": "Ancient Languages Discussion",
+    "details": "A discussion on the ancient languages and scripts of Middle-earth.",
+    "authorRole": "FACULTY",
+    "content": "This post explores the linguistic features of Elvish, Dwarvish, and more.",
+    "createdAt": "2024-04-15T15:00:00.000Z",
+    "updatedAt": "2024-04-15T15:00:00.000Z",
+    "type": "QUESTION",
+    "author": "u7",
+    "course": "RS107",
+    "visibility": "ENTIRE_CLASS",
+    "visibleTo": [],
+    "views": [],
+    "answers": [],
+    "folders": [
+      "rs107_hw1"
+    ]
+  },
+  {
+    "_id": "p8",
+    "summary": "Diplomacy in Middle-earth",
+    "details": "Exploring the dynamics of inter-species diplomacy among Middle-earth's races.",
+    "authorRole": "FACULTY",
+    "content": "This post examines how diplomacy is maintained between Wizards, Elves, and Men.",
+    "createdAt": "2024-04-16T15:00:00.000Z",
+    "updatedAt": "2024-04-16T15:00:00.000Z",
+    "type": "QUESTION",
+    "author": "u8",
+    "course": "RS108",
+    "visibility": "ENTIRE_CLASS",
+    "visibleTo": [],
+    "views": [],
+    "answers": [],
+    "folders": [
+      "rs108_hw1"
+    ]
+  }
+]
