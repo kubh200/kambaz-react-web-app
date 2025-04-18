@@ -49,7 +49,10 @@ export const deletePost = async (postId: string) => {
 
 // Answers
 export const createAnswer = async (answer: any) => {
-  const response = await axios.post(`${PAZZA_API}/answers`, answer)
+  const response = await axios.post(
+    `${PAZZA_API}/posts/${answer.post}/answers`,
+    answer
+  )
   return response.data
 }
 
@@ -63,6 +66,17 @@ export const deleteAnswer = async (answerId: string) => {
   return response.data
 }
 
+// Get all answers for a given post
+export const fetchAnswersForPost = async (postId: string) => {
+  const response = await axios.get(`${PAZZA_API}/posts/${postId}/answers`);
+  return response.data;
+};
+
+// (Optional) Get a single answer by its id
+export const fetchAnswerById = async (answerId: string) => {
+  const response = await axios.get(`${PAZZA_API}/answers/${answerId}`);
+  return response.data;
+};
 // Folders
 export const fetchFolders = async (courseId: string) => {
   const response = await axiosWithCredentials.get(`${PAZZA_API}/courses/${courseId}/folders`)
@@ -120,22 +134,26 @@ export const toggleDiscussionResolved = async (data: { discussionId: string; res
 
 // Replies
 export const createReply = async (reply: any) => {
-  const response = await axios.post(`${PAZZA_API}/discussions/${reply.discussion}/replies`, reply)
-  return response.data
-}
+  const response = await axios.post(`${PAZZA_API}/answers/${reply.answer}/replies`, reply);
+  return response.data;
+};
 
-export const updateReply = async (data: {
-  replyId: string
-  discussionId: string
-  content: string
-  updatedAt: string
-}) => {
-  const response = await axios.put(`${PAZZA_API}/discussions/${data.discussionId}/replies/${data.replyId}`, data)
-  return response.data
-}
+export const fetchRepliesForAnswer = async (answerId: string) => {
+  const response = await axios.get(`${PAZZA_API}/answers/${answerId}/replies`);
+  return response.data;
+};
 
-export const deleteReply = async (data: { replyId: string; discussionId: string }) => {
-  const response = await axios.delete(`${PAZZA_API}/discussions/${data.discussionId}/replies/${data.replyId}`)
-  return response.data
-}
+export const fetchReplyById = async (replyId: string) => {
+  const response = await axios.get(`${PAZZA_API}/replies/${replyId}`);
+  return response.data;
+};
 
+export const updateReply = async (replyId: string, reply: any) => {
+  const response = await axios.put(`${PAZZA_API}/replies/${replyId}`, reply);
+  return response.data;
+};
+
+export const deleteReply = async (replyId: string) => {
+  const response = await axios.delete(`${PAZZA_API}/replies/${replyId}`);
+  return response.data;
+};

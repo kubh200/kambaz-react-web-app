@@ -178,6 +178,10 @@ Main container
     height: 100%;
     overflow: hidden;
   }
+  .pazza-post-item.selected {
+    background-color: #e9f2fa;
+    border-left: 3px solid #2970a6;
+  }
   
   .pazza-posts-controls {
     display: flex;

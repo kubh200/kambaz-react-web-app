@@ -1,380 +1,313 @@
-"use client"
-
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { Button, Dropdown } from "react-bootstrap"
-import { Editor } from "@tinymce/tinymce-react"
+import { Button, Dropdown, Form } from "react-bootstrap"
+import ReactQuill from "react-quill"
+import "react-quill/dist/quill.snow.css"
+import type { Answer, Post, Folder } from "../reducer"
+import {
+  createAnswer,
+  updateAnswer,
+  deleteAnswer,
+  deletePost,
+  updatePost
+} from "../reducer"
 import { formatDistanceToNow } from "date-fns"
-import { FaEye, FaEdit } from "react-icons/fa"
-import { updatePost, deletePost, createAnswer, updateAnswer, deleteAnswer } from "../reducer"
-import FollowupDiscussion from "../commponents/FollowupDiscussion"
+import * as client from "../client" // 🔧 Added for fetching answers
 
-export default function ViewPost() {
+export default function ViewPost({ onReplyClick }: { onReplyClick: () => void }) {
   const dispatch = useDispatch()
-  const { selectedPost, posts, folders } = useSelector((state: any) => state.pazzaReducer)
-  const { currentUser } = useSelector((state: any) => state.accountReducer)
+  const { selectedPost, posts, folders } = useSelector((s: any) => s.pazzaReducer)
+  const { currentUser } = useSelector((s: any) => s.accountReducer)
 
-  const [post, setPost] = useState<any>(null)
-  const [studentAnswers, setStudentAnswers] = useState<any[]>([])
-  const [instructorAnswers, setInstructorAnswers] = useState<any[]>([])
-  const [newAnswer, setNewAnswer] = useState("")
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedContent, setEditedContent] = useState("")
+  const [post, setPost] = useState<Post | null>(null)
+  const [answers, setAnswers] = useState<Answer[]>([]) // 🔧 Added to hold answers
+  const [isEditingPost, setIsEditingPost] = useState(false)
+  const [editedSummary, setEditedSummary] = useState("")
+  const [editedDetails, setEditedDetails] = useState("")
+  const [studentEditorOpen, setStudentEditorOpen] = useState(false)
+  const [instructorEditorOpen, setInstructorEditorOpen] = useState(false)
+  const [composerContent, setComposerContent] = useState("")
+  const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null)
+  const [errors, setErrors] = useState<string | null>(null)
 
-  // Find the current post and its answers
   useEffect(() => {
-    if (selectedPost && posts.length > 0) {
-      const currentPost = posts.find((p: any) => p._id === selectedPost)
-      if (currentPost) {
-        setPost(currentPost)
-
-        // Separate student and instructor answers
-        const sAnswers = currentPost.answers.filter((a: any) => a.authorRole !== "FACULTY")
-        const iAnswers = currentPost.answers.filter((a: any) => a.authorRole === "FACULTY")
-
-        setStudentAnswers(sAnswers)
-        setInstructorAnswers(iAnswers)
+    const load = async () => {
+      if (selectedPost) {
+        const found = posts.find((p: Post) => p._id === selectedPost)
+        setPost(found || null)
+        if (found) {
+          setEditedSummary(found.summary)
+          setEditedDetails(found.details)
+        }
+        const fetchedAnswers = await client.fetchAnswersForPost(selectedPost) // 🔧 Fetch answers
+        setAnswers(fetchedAnswers) // 🔧 Store them
       }
     }
-  }, [selectedPost, posts])
+    load()
+  }, [selectedPost, posts]) // 🔧 Modified effect to fetch answers
 
-  if (!post) {
-    return <div>Loading...</div>
-  }
+  if (!post) return <div>Loading…</div>
 
-  const handleEditPost = () => {
-    setIsEditing(true)
-    setEditedContent(post.details)
-  }
+  const isInstructor = ["FACULTY", "TA"].includes(currentUser.role)
+  const isStudent = currentUser.role === "STUDENT"
+  const isAuthor = currentUser._id === post.author
+
+  const createdAgo = formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })
+  const postFolders = folders.filter((f: Folder) => post.folders.includes(f._id))
+
+  const studentAnswers: Answer[] = answers.filter(a => a.authorRole === "STUDENT") // 🔧 Replaced post.answers
+  const instructorAnswers: Answer[] = answers.filter(a => ["FACULTY", "TA"].includes(a.authorRole)) // 🔧 Replaced post.answers
 
   const handleSaveEdit = async () => {
-    try {
-      await dispatch(
-        updatePost({
-          ...post,
-          details: editedContent,
-          updatedAt: new Date().toISOString(),
-        }) as any,
-      )
-      setIsEditing(false)
-    } catch (error) {
-      console.error("Error updating post:", error)
-    }
+    await dispatch(updatePost({
+      ...post,
+      summary: editedSummary,
+      details: editedDetails,
+      updatedAt: new Date().toISOString()
+    }) as any)
+    setIsEditingPost(false)
   }
 
-  const handleDeletePost = async () => {
-    if (window.confirm("Are you sure you want to delete this post?")) {
-      try {
-        await dispatch(deletePost(post._id) as any)
-      } catch (error) {
-        console.error("Error deleting post:", error)
-      }
+  const handleSubmit = async () => {
+    if (!composerContent.trim()) return setErrors("Answer cannot be empty")
+    setErrors(null)
+
+    if (editingAnswerId) {
+      await dispatch(updateAnswer({ _id: editingAnswerId, content: composerContent }) as any)
+      setEditingAnswerId(null)
+
+      const refreshedAnswers = await client.fetchAnswersForPost(post._id)
+      setAnswers(refreshedAnswers)
+    } else {
+        await dispatch(createAnswer({
+        post: post._id,
+        author: currentUser._id,
+        authorRole: currentUser.role,
+        authorName: currentUser.fullName,
+        content: composerContent,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }) as any)
+
+      // 🔧 Refresh the answer list after submission
+      const newAnswers = await client.fetchAnswersForPost(post._id)
+      setAnswers(newAnswers)
     }
+
+    setComposerContent("")
+    setStudentEditorOpen(false)
+    setInstructorEditorOpen(false)
   }
 
-  const handleSubmitAnswer = async () => {
-    if (!newAnswer.trim()) return
-
-    const answer = {
-      post: post._id,
-      author: currentUser._id,
-      authorRole: currentUser.role,
-      content: newAnswer,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-
-    try {
-      await dispatch(createAnswer(answer) as any)
-      setNewAnswer("")
-    } catch (error) {
-      console.error("Error creating answer:", error)
-    }
-  }
-
-  const handleEditAnswer = async (answer: any, newContent: string) => {
-    try {
-      await dispatch(
-        updateAnswer({
-          ...answer,
-          content: newContent,
-          updatedAt: new Date().toISOString(),
-        }) as any,
-      )
-    } catch (error) {
-      console.error("Error updating answer:", error)
+  const handleEditAnswer = (ans: Answer) => {
+    setEditingAnswerId(ans._id)
+    setComposerContent(ans.content)
+    // onReplyClick()
+    if (ans.authorRole === "STUDENT") {
+      setStudentEditorOpen(true); // 🔓 open student editor
+    } else {
+      setInstructorEditorOpen(true); // 🔓 open instructor editor
     }
   }
 
   const handleDeleteAnswer = async (answerId: string) => {
-    if (window.confirm("Are you sure you want to delete this answer?")) {
-      try {
-        await dispatch(deleteAnswer(answerId) as any)
-      } catch (error) {
-        console.error("Error deleting answer:", error)
-      }
-    }
+    await dispatch(deleteAnswer(answerId) as any)
+    const updatedAnswers = await client.fetchAnswersForPost(post!._id) // 🔁 Refresh
+    setAnswers(updatedAnswers)
   }
 
-  const canEdit = currentUser._id === post.author || currentUser.role === "FACULTY"
-  const isInstructor = currentUser.role === "FACULTY"
-  const isStudent = currentUser.role !== "FACULTY"
-  const postFolders = folders.filter((f: any) => post.folders.includes(f._id))
-  const createdAt = new Date(post.createdAt)
-  const timeAgo = formatDistanceToNow(createdAt, { addSuffix: true })
-
   return (
-    <div className="pazza-view-post">
-      <div className="pazza-post-header">
-        <h2>{post.summary}</h2>
-        <div className="pazza-post-meta">
-          <span className="pazza-post-views">
-            <FaEye /> {post.views.length} views
-          </span>
-          <span className="pazza-post-folders">
-            {postFolders.map((folder: any) => (
-              <span key={folder._id} className="pazza-post-folder">
-                {folder.name}
-              </span>
-            ))}
-          </span>
-          <span className="pazza-post-author">
-            Posted by {post.authorName || "User"} ({post.authorRole === "FACULTY" ? "Instructor" : "Student"})
-          </span>
-          <span className="pazza-post-time">{timeAgo}</span>
-        </div>
-      </div>
-
-      <div className="pazza-post-content">
-        {isEditing ? (
-          <div className="pazza-post-edit">
-            <Editor
-              apiKey="your-tinymce-api-key"
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: [
-                  "advlist",
-                  "autolink",
-                  "lists",
-                  "link",
-                  "image",
-                  "charmap",
-                  "preview",
-                  "anchor",
-                  "searchreplace",
-                  "visualblocks",
-                  "code",
-                  "fullscreen",
-                  "insertdatetime",
-                  "media",
-                  "table",
-                  "code",
-                  "help",
-                  "wordcount",
-                ],
-                toolbar:
-                  "undo redo | formatselect | " +
-                  "bold italic backcolor | alignleft aligncenter " +
-                  "alignright alignjustify | bullist numlist outdent indent | " +
-                  "removeformat | help",
-              }}
-              value={editedContent}
-              onEditorChange={setEditedContent}
-            />
-            <div className="pazza-edit-actions">
-              <Button variant="secondary" onClick={() => setIsEditing(false)}>
-                Cancel
-              </Button>
-              <Button variant="primary" onClick={handleSaveEdit}>
-                Save
-              </Button>
+    <div className="p-4">
+      {/* Post Detail */}
+      <div className="mb-4 border-bottom pb-3">
+        {isEditingPost ? (
+          <>
+            <Form.Control className="mb-2" value={editedSummary} onChange={(e) => setEditedSummary(e.target.value)} />
+            <ReactQuill value={editedDetails} onChange={setEditedDetails} className="mb-2" />
+            <div className="d-flex gap-2">
+              <Button size="sm" onClick={handleSaveEdit}>Save</Button>
+              <Button size="sm" variant="secondary" onClick={() => setIsEditingPost(false)}>Cancel</Button>
             </div>
-          </div>
+          </>
         ) : (
-          <div dangerouslySetInnerHTML={{ __html: post.details }} />
+          <>
+            <div className="d-flex justify-content-between">
+              <div>
+                <h2 className="fw-bold">{post.summary}</h2>
+                <div className="text-muted mb-2">Posted {createdAgo}</div>
+              </div>
+              {(isAuthor || isInstructor) && (
+                <div className="d-flex align-items-start gap-2">
+                  <Button variant="outline-primary" size="sm" onClick={() => setIsEditingPost(true)}>Edit</Button>
+                  <Dropdown>
+                    <Dropdown.Toggle variant="outline-secondary" size="sm">Actions</Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => setIsEditingPost(true)}>Edit</Dropdown.Item>
+                      <Dropdown.Item onClick={() => dispatch(deletePost(post._id) as any)} className="text-danger">Delete</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+              )}
+            </div>
+            <div dangerouslySetInnerHTML={{ __html: post.details }} />
+          </>
         )}
       </div>
 
-      {canEdit && !isEditing && (
-        <div className="pazza-post-actions">
-          <Button variant="outline-primary" size="sm" onClick={handleEditPost}>
-            <FaEdit /> Edit
-          </Button>
-          <Dropdown>
-            <Dropdown.Toggle variant="outline-secondary" size="sm" id="dropdown-actions">
-              Actions
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={handleEditPost}>Edit</Dropdown.Item>
-              <Dropdown.Item onClick={handleDeletePost} className="text-danger">
-                Delete
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+      {/* Section 2: Student Answer */}
+      {post.type === "QUESTION" && (
+        <div className="mb-4">
+          <h5>Student Answer</h5>
+
+          {studentAnswers.length === 0 ? (
+            isInstructor ? (
+              <div className="text-muted">No student answers yet.</div>
+            ) : (
+              !studentEditorOpen && (
+                <div
+                  className="border rounded p-3 text-muted"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setStudentEditorOpen(true)}
+                >
+                  Click here to add the student answer...
+                </div>
+              )
+            )
+          ) : (
+            <>
+              {studentAnswers.map(a => (
+                <div key={a._id} className="border rounded p-3 mb-2">
+                  <div className="d-flex justify-content-between">
+                    <strong>{a.authorName}</strong>
+                    <small>{formatDistanceToNow(new Date(a.createdAt), { addSuffix: true })}</small>
+                  </div>
+                  <div className="mt-2" dangerouslySetInnerHTML={{ __html: a.content }} />
+                  {(currentUser._id === a.author || isInstructor) && (
+                    <Dropdown className="mt-2">
+                      <Dropdown.Toggle variant="link" size="sm">Actions</Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => handleEditAnswer(a)}>Edit</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleDeleteAnswer(a._id)} className="text-danger">
+                          Delete
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  )}
+                </div>
+              ))}
+
+              {/* Always allow students to add another answer */}
+              {isStudent && !studentEditorOpen && (
+                <div
+                  className="border rounded p-3 text-muted"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setStudentEditorOpen(true)}
+                >
+                  Add a student answer...
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Editor */}
+          {isStudent && studentEditorOpen && (
+            <>
+              <ReactQuill theme="snow" value={composerContent} onChange={setComposerContent} />
+              {errors && <div className="text-danger mt-2">{errors}</div>}
+              <div className="mt-2">
+                <Button size="sm" onClick={handleSubmit} className="me-2">Submit</Button>
+                <Button
+                  size="sm"
+                  variant="outline-secondary"
+                  onClick={() => {
+                    setComposerContent('');
+                    setStudentEditorOpen(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       )}
 
+      {/* Section 3: Instructor Answer */}
       {post.type === "QUESTION" && (
-        <>
-          {studentAnswers.length > 0 && (
-            <div className="pazza-answers-section">
-              <h3>Student's Answers</h3>
-              {studentAnswers.map((answer: any) => (
-                <div key={answer._id} className="pazza-answer">
-                  <div className="pazza-answer-meta">
-                    <span className="pazza-answer-author">{answer.authorName || "Student"}</span>
-                    <span className="pazza-answer-time">
-                      {formatDistanceToNow(new Date(answer.createdAt), { addSuffix: true })}
-                    </span>
+        <div>
+          <h5>Instructor Answer</h5>
+
+          {instructorAnswers.length === 0 ? (
+            isInstructor ? (
+              !instructorEditorOpen && (
+                <div
+                  className="border rounded p-3 text-muted"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setInstructorEditorOpen(true)}
+                >
+                  Click here to add the instructor answer...
+                </div>
+              )
+            ) : (
+              <div className="text-muted">No instructor answers yet.</div>
+            )
+          ) : (
+            <>
+              {instructorAnswers.map(a => (
+                <div key={a._id} className="border rounded p-3 mb-2 bg-light">
+                  <div className="d-flex justify-content-between">
+                    <strong>{a.authorName}</strong>
+                    <small>{formatDistanceToNow(new Date(a.createdAt), { addSuffix: true })}</small>
                   </div>
-                  <div className="pazza-answer-content" dangerouslySetInnerHTML={{ __html: answer.content }} />
-                  {(currentUser._id === answer.author || isInstructor) && (
-                    <div className="pazza-answer-actions">
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        onClick={() => {
-                          // Implement edit answer functionality
-                          const newContent = prompt("Edit your answer:", answer.content)
-                          if (newContent) {
-                            handleEditAnswer(answer, newContent)
-                          }
-                        }}
-                      >
-                        <FaEdit /> Edit
-                      </Button>
-                      <Dropdown>
-                        <Dropdown.Toggle variant="outline-secondary" size="sm" id={`dropdown-actions-${answer._id}`}>
-                          Actions
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() => {
-                              const newContent = prompt("Edit your answer:", answer.content)
-                              if (newContent) {
-                                handleEditAnswer(answer, newContent)
-                              }
-                            }}
-                          >
-                            Edit
-                          </Dropdown.Item>
-                          <Dropdown.Item onClick={() => handleDeleteAnswer(answer._id)} className="text-danger">
-                            Delete
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </div>
+                  <div className="mt-2" dangerouslySetInnerHTML={{ __html: a.content }} />
+                  {isInstructor && (
+                    <Dropdown className="mt-2">
+                      <Dropdown.Toggle variant="link" size="sm">Actions</Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => handleEditAnswer(a)}>Edit</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleDeleteAnswer(a._id)} className="text-danger">
+                          Delete
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
                   )}
                 </div>
               ))}
-            </div>
-          )}
 
-          {instructorAnswers.length > 0 && (
-            <div className="pazza-answers-section">
-              <h3>Instructor's Answers</h3>
-              {instructorAnswers.map((answer: any) => (
-                <div key={answer._id} className="pazza-answer instructor-answer">
-                  <div className="pazza-answer-meta">
-                    <span className="pazza-answer-author">{answer.authorName || "Instructor"}</span>
-                    <span className="pazza-answer-time">
-                      {formatDistanceToNow(new Date(answer.createdAt), { addSuffix: true })}
-                    </span>
-                  </div>
-                  <div className="pazza-answer-content" dangerouslySetInnerHTML={{ __html: answer.content }} />
-                  {(currentUser._id === answer.author || isInstructor) && (
-                    <div className="pazza-answer-actions">
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        onClick={() => {
-                          const newContent = prompt("Edit your answer:", answer.content)
-                          if (newContent) {
-                            handleEditAnswer(answer, newContent)
-                          }
-                        }}
-                      >
-                        <FaEdit /> Edit
-                      </Button>
-                      <Dropdown>
-                        <Dropdown.Toggle variant="outline-secondary" size="sm" id={`dropdown-actions-${answer._id}`}>
-                          Actions
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() => {
-                              const newContent = prompt("Edit your answer:", answer.content)
-                              if (newContent) {
-                                handleEditAnswer(answer, newContent)
-                              }
-                            }}
-                          >
-                            Edit
-                          </Dropdown.Item>
-                          <Dropdown.Item onClick={() => handleDeleteAnswer(answer._id)} className="text-danger">
-                            Delete
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </div>
-                  )}
+              {/* Always allow instructors to add another answer */}
+              {isInstructor && !instructorEditorOpen && (
+                <div
+                  className="border rounded p-3 text-muted"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setInstructorEditorOpen(true)}
+                >
+                  Add an instructor answer...
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
 
-          {/* Answer input section */}
-          {((isStudent && studentAnswers.length === 0) || (isInstructor && instructorAnswers.length === 0)) && (
-            <div className="pazza-new-answer">
-              <h3>{isInstructor ? "Post an Instructor Answer" : "Post an Answer"}</h3>
-              <Editor
-                apiKey="your-tinymce-api-key"
-                init={{
-                  height: 200,
-                  menubar: false,
-                  plugins: [
-                    "advlist",
-                    "autolink",
-                    "lists",
-                    "link",
-                    "image",
-                    "charmap",
-                    "preview",
-                    "anchor",
-                    "searchreplace",
-                    "visualblocks",
-                    "code",
-                    "fullscreen",
-                    "insertdatetime",
-                    "media",
-                    "table",
-                    "code",
-                    "help",
-                    "wordcount",
-                  ],
-                  toolbar:
-                    "undo redo | formatselect | " +
-                    "bold italic backcolor | alignleft aligncenter " +
-                    "alignright alignjustify | bullist numlist outdent indent | " +
-                    "removeformat | help",
-                }}
-                value={newAnswer}
-                onEditorChange={setNewAnswer}
-              />
-              <Button variant="primary" className="mt-2" onClick={handleSubmitAnswer} disabled={!newAnswer.trim()}>
-                Submit Answer
-              </Button>
-            </div>
+          {isInstructor && instructorEditorOpen && (
+            <>
+              <ReactQuill theme="snow" value={composerContent} onChange={setComposerContent} />
+              {errors && <div className="text-danger mt-2">{errors}</div>}
+              <div className="mt-2">
+                <Button size="sm" onClick={handleSubmit} className="me-2">Submit</Button>
+                <Button
+                  size="sm"
+                  variant="outline-secondary"
+                  onClick={() => {
+                    setComposerContent('');
+                    setInstructorEditorOpen(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </>
           )}
-        </>
+        </div>
       )}
-
-      <div className="pazza-followup-section">
-        <h3>Follow-up Discussion</h3>
-        <FollowupDiscussion postId={post._id} />
-      </div>
     </div>
   )
 }
-

@@ -15,7 +15,7 @@ export default function PostScreen({
   if (showNewPost) {
     return <NewPost onCancel={() => setShowNewPost(false)} />
   } else if (selectedPost) {
-    return <ViewPost />
+    return <ViewPost onReplyClick={() => setShowNewPost(true)}/>
   } else {
     return <ClassAtGlance />
   }

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/tool
 import * as client from "./client"
 
 // Define interfaces for our data models
-interface Post {
+export interface Post {
   _id: string
   summary: string
   details: string
@@ -20,7 +20,7 @@ interface Post {
   answers: Answer[]
 }
 
-interface Answer {
+export interface Answer {
   _id: string
   post: string
   author: string
@@ -31,13 +31,13 @@ interface Answer {
   updatedAt: string
 }
 
-interface Folder {
+export interface Folder {
   _id: string
   name: string
   course: string
 }
 
-interface Discussion {
+export interface Discussion {
   _id: string
   post: string
   author: string
@@ -50,7 +50,7 @@ interface Discussion {
   replies: Reply[]
 }
 
-interface Reply {
+export interface Reply {
   _id: string
   discussion: string
   author: string
@@ -63,7 +63,7 @@ interface Reply {
 }
 
 // Define the state interface
-interface PazzaState {
+export interface PazzaState {
   posts: Post[]
   folders: Folder[]
   discussions: Discussion[]
@@ -167,33 +167,33 @@ export const createReply = createAsyncThunk<Reply, any>("pazza/createReply", asy
   return response
 })
 
+
+
 interface UpdateReplyParams {
   replyId: string
-  discussionId: string
   content: string
   updatedAt: string
 }
 
 export const updateReply = createAsyncThunk<any, UpdateReplyParams>(
   "pazza/updateReply",
-  async (data: UpdateReplyParams) => {
-    const response = await client.updateReply(data)
-    return response
-  },
-)
+  async ({ replyId, ...rest }) => {
+    const response = await client.updateReply(replyId, rest);
+    return response;
+  }
+);
 
 interface DeleteReplyParams {
   replyId: string
-  discussionId: string
 }
 
 export const deleteReply = createAsyncThunk<DeleteReplyParams, DeleteReplyParams>(
   "pazza/deleteReply",
   async (data: DeleteReplyParams) => {
-    await client.deleteReply(data)
-    return data
-  },
-)
+    await client.deleteReply(data.replyId);
+    return data;
+  }
+);
 
 // Initial state with proper typing
 const initialState: PazzaState = {
@@ -228,9 +228,9 @@ const pazzaSlice = createSlice({
     },
     setIsCreatingNewPost: (state, action: PayloadAction<boolean>) => {
       state.isCreatingNewPost = action.payload
-      if (action.payload) {
-        state.selectedPost = null
-      }
+      // if (action.payload) {
+      //   state.selectedPost = null
+      // }
     },
   },
   extraReducers: (builder) => {
@@ -361,14 +361,10 @@ const pazzaSlice = createSlice({
       state.loading = false
     })
     builder.addCase(deleteReply.fulfilled, (state, action) => {
-      const discussionIndex = state.discussions.findIndex(
-        (discussion) => discussion._id === action.payload.discussionId,
-      )
-      if (discussionIndex !== -1) {
-        state.discussions[discussionIndex].replies = state.discussions[discussionIndex].replies.filter(
-          (reply) => reply._id !== action.payload.replyId,
-        )
-      }
+      state.discussions = state.discussions.map((discussion) => ({
+        ...discussion,
+        replies: discussion.replies.filter((reply) => reply._id !== action.payload.replyId),
+      }))
       state.loading = false
     })
   },
