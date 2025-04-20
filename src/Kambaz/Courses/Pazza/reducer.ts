@@ -131,41 +131,63 @@ export const deleteFolder = createAsyncThunk<string, string>("pazza/deleteFolder
   return folderId
 })
 
-export const createDiscussion = createAsyncThunk<Discussion, any>("pazza/createDiscussion", async (discussion: any) => {
-  const response = await client.createDiscussion(discussion)
-  return response
-})
+export const fetchDiscussionsForAnswer = createAsyncThunk<Discussion[], string>(
+  "pazza/fetchDiscussionsForAnswer",
+  async (answerId: string) => {
+    const response = await client.fetchDiscussionsForAnswer(answerId);
+    return response;
+  }
+);
 
-export const updateDiscussion = createAsyncThunk<any, any>("pazza/updateDiscussion", async (discussion: any) => {
-  const response = await client.updateDiscussion(discussion)
-  return response
-})
+export const createDiscussion = createAsyncThunk<Discussion, { answerId: string, discussion: any }>(
+  "pazza/createDiscussion",
+  async ({ answerId, discussion }) => {
+    const response = await client.createDiscussion(answerId, discussion);
+    return response;
+  }
+);
+
+export const updateDiscussion = createAsyncThunk<any, any>(
+  "pazza/updateDiscussion",
+  async (discussion: any) => {
+    const response = await client.updateDiscussion(discussion._id, discussion);
+    return response;
+  }
+);
 
 export const deleteDiscussion = createAsyncThunk<string, string>(
   "pazza/deleteDiscussion",
   async (discussionId: string) => {
-    await client.deleteDiscussion(discussionId)
-    return discussionId
-  },
-)
+    await client.deleteDiscussion(discussionId);
+    return discussionId;
+  }
+);
+
+export const toggleDiscussionResolved = createAsyncThunk<any, { discussionId: string; resolved: boolean }>(
+  "pazza/toggleDiscussionResolved",
+  async ({ discussionId, resolved }) => {
+    const response = await client.toggleDiscussionResolved({ discussionId, resolved });
+    return response;
+  }
+);
 
 interface ToggleResolvedParams {
   discussionId: string
   resolved: boolean
 }
 
-export const toggleDiscussionResolved = createAsyncThunk<any, ToggleResolvedParams>(
-  "pazza/toggleDiscussionResolved",
-  async (data: ToggleResolvedParams) => {
-    const response = await client.toggleDiscussionResolved(data)
-    return response
-  },
-)
+interface CreateReplyParams {
+  discussionId: string;
+  reply: any;
+}
 
-export const createReply = createAsyncThunk<Reply, any>("pazza/createReply", async (reply: any) => {
-  const response = await client.createReply(reply)
-  return response
-})
+export const createReply = createAsyncThunk<Reply, CreateReplyParams>(
+  "pazza/createReply",
+  async ({ discussionId, reply }) => {
+    const response = await client.createReply(discussionId, reply);
+    return response;
+  }
+);
 
 
 
@@ -231,6 +253,9 @@ const pazzaSlice = createSlice({
       // if (action.payload) {
       //   state.selectedPost = null
       // }
+    },
+    clearSelectedPost: (state) => {
+      state.selectedPost = null;
     },
   },
   extraReducers: (builder) => {
@@ -370,6 +395,6 @@ const pazzaSlice = createSlice({
   },
 })
 
-export const { setPosts, setSelectedPost, setSelectedFolder, togglePostSidebar, setIsCreatingNewPost } = pazzaSlice.actions
+export const { setPosts, setSelectedPost, setSelectedFolder, togglePostSidebar, setIsCreatingNewPost, clearSelectedPost, } = pazzaSlice.actions
 
 export default pazzaSlice.reducer

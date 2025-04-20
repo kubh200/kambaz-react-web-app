@@ -708,6 +708,11 @@ Main container
   color: #6c757d;
 }
 
+.ql-editor {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .pazza-main-content {

@@ -109,12 +109,13 @@
 //   )
 // }
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { Route, Routes, useParams } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import PazzaNavigation from "./Navigation"
 import FolderFilters from "./FolderFilters"
 import PostsList from "./PostList"
 import PostScreen from "./PostScreen"
+import ViewPost from "./PostScreen/ViewPost"
 import { fetchFolders } from "./reducer"
 import { Container, Row, Col } from "react-bootstrap"
 import "./pazza.css"
@@ -149,10 +150,24 @@ export default function Pazza() {
               onNewPostClick={() => setShowNewPost(true)}/>
             </Col>
           )}
-          <Col className="h-100 overflow-auto">
+          {/* <Col className="h-100 overflow-auto">
             <PostScreen 
               showNewPost={showNewPost}
               setShowNewPost={setShowNewPost}/>
+          </Col> */}
+          <Col className="h-100 overflow-auto">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PostScreen
+                    showNewPost={showNewPost}
+                    setShowNewPost={setShowNewPost}
+                  />
+                }
+              />
+              <Route path="posts/:postId" element={<ViewPost onReplyClick={() => {}} />} />
+            </Routes>
           </Col>
         </Row>
       </Container>

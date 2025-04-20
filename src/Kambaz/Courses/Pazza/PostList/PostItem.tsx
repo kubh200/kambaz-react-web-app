@@ -91,6 +91,7 @@ export default function PostItem({
   isSelected,
   onClick,
 }: PostItemProps) {
+  console.log("Rendering PostItem", post._id, "Selected:", isSelected);
   const rawDetails = post.details ?? post.content ?? ""
   const rawSummary = post.summary ?? rawDetails
 

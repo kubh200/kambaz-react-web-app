@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useRef, useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { Button, Dropdown, Form } from "react-bootstrap"
 import ReactQuill from "react-quill"
@@ -9,14 +10,17 @@ import {
   updateAnswer,
   deleteAnswer,
   deletePost,
-  updatePost
+  updatePost,
+  clearSelectedPost
 } from "../reducer"
 import { formatDistanceToNow } from "date-fns"
 import * as client from "../client" // 🔧 Added for fetching answers
+import AnswerDiscussions from "./AnswerDiscussions";
 
 export default function ViewPost({ onReplyClick }: { onReplyClick: () => void }) {
   const dispatch = useDispatch()
-  const { selectedPost, posts, folders } = useSelector((s: any) => s.pazzaReducer)
+  // const { selectedPost, posts, folders } = useSelector((s: any) => s.pazzaReducer)
+  const { posts, folders } = useSelector((s: any) => s.pazzaReducer)
   const { currentUser } = useSelector((s: any) => s.accountReducer)
 
   const [post, setPost] = useState<Post | null>(null)
@@ -29,22 +33,98 @@ export default function ViewPost({ onReplyClick }: { onReplyClick: () => void })
   const [composerContent, setComposerContent] = useState("")
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null)
   const [errors, setErrors] = useState<string | null>(null)
+  const hasIncrementedRef = useRef(false);
+  const { postId } = useParams();
+  
 
+  // useEffect(() => {
+  //   const load = async () => {
+  //     if (selectedPost) {
+  //       const found = posts.find((p: Post) => p._id === selectedPost)
+  //       setPost(found || null)
+  //       if (found) {
+  //         setEditedSummary(found.summary)
+  //         setEditedDetails(found.details)
+  //       }
+  //       const fetchedAnswers = await client.fetchAnswersForPost(selectedPost) // 🔧 Fetch answers
+  //       setAnswers(fetchedAnswers) // 🔧 Store them
+  //     }
+  //   }
+  //   load()
+  // }, [selectedPost, posts]) // 🔧 Modified effect to fetch answers
   useEffect(() => {
     const load = async () => {
-      if (selectedPost) {
-        const found = posts.find((p: Post) => p._id === selectedPost)
-        setPost(found || null)
+      if (postId) {
+        const found = posts.find((p: Post) => p._id === postId);
+        setPost(found || null);
         if (found) {
-          setEditedSummary(found.summary)
-          setEditedDetails(found.details)
+          setEditedSummary(found.summary);
+          setEditedDetails(found.details);
         }
-        const fetchedAnswers = await client.fetchAnswersForPost(selectedPost) // 🔧 Fetch answers
-        setAnswers(fetchedAnswers) // 🔧 Store them
+        const fetchedAnswers = await client.fetchAnswersForPost(postId);
+        setAnswers(fetchedAnswers);
       }
+    };
+    load();
+  }, [postId, posts]);
+
+  // useEffect(() => {
+  //   if (selectedPost && currentUser?._id && !hasIncrementedRef.current) {
+  //     hasIncrementedRef.current = true;
+  //     client.incrementPostView(selectedPost);
+  //   }
+  //   setPost((prev) => {
+  //     if (!prev) return prev;
+  //     const updatedViews = [...(prev.views || []), currentUser._id];
+  //     return { ...prev, views: updatedViews };
+  //   });
+  // }, [selectedPost, currentUser?._id]);
+
+  
+  useEffect(() => {
+    if (!postId || !currentUser?._id || hasIncrementedRef.current) return;
+    hasIncrementedRef.current = true;
+  
+    const found = posts.find((p: Post) => p._id === postId);
+    if (!found) return;
+  
+    const alreadyViewed = found.views.includes(currentUser._id);
+    if (alreadyViewed) {
+      setPost(found);
+      return;
     }
-    load()
-  }, [selectedPost, posts]) // 🔧 Modified effect to fetch answers
+  
+    // Optimistically update local state
+    const updatedPost = {
+      ...found,
+      views: [...found.views, currentUser._id],
+    };
+    setPost(updatedPost);
+  
+    // 🔥 Immediately update Redux posts array
+    dispatch({
+      type: "pazza/setPosts",
+      payload: posts.map((p: Post) =>
+        p._id === postId ? updatedPost : p
+      ),
+    });
+  
+    // Increment view in backend
+    client.incrementPostView(postId).catch((err) =>
+      console.error("Failed to increment view", err)
+    );
+  }, [postId, currentUser?._id, posts, dispatch]);
+  
+
+  // useEffect(() => {
+  //   const incrementOnce = async () => {
+  //     if (selectedPost) {
+  //       await client.incrementPostView(selectedPost);
+  //     }
+  //   };
+  //   incrementOnce();
+  //   // Only run on first mount
+  // }, []);
 
   if (!post) return <div>Loading…</div>
 
@@ -83,7 +163,7 @@ export default function ViewPost({ onReplyClick }: { onReplyClick: () => void })
         post: post._id,
         author: currentUser._id,
         authorRole: currentUser.role,
-        authorName: currentUser.fullName,
+        authorName: currentUser.firstName + " "+ currentUser.lastName,
         content: composerContent,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -102,12 +182,14 @@ export default function ViewPost({ onReplyClick }: { onReplyClick: () => void })
   const handleEditAnswer = (ans: Answer) => {
     setEditingAnswerId(ans._id)
     setComposerContent(ans.content)
+    setStudentEditorOpen(false);     // ⛔ hide global student editor
+    setInstructorEditorOpen(false);  // ⛔ hide global instructor editor
     // onReplyClick()
-    if (ans.authorRole === "STUDENT") {
-      setStudentEditorOpen(true); // 🔓 open student editor
-    } else {
-      setInstructorEditorOpen(true); // 🔓 open instructor editor
-    }
+    // if (ans.authorRole === "STUDENT") {
+    //   setStudentEditorOpen(true); // 🔓 open student editor
+    // } else {
+    //   setInstructorEditorOpen(true); // 🔓 open instructor editor
+    // }
   }
 
   const handleDeleteAnswer = async (answerId: string) => {
@@ -131,10 +213,12 @@ export default function ViewPost({ onReplyClick }: { onReplyClick: () => void })
           </>
         ) : (
           <>
-            <div className="d-flex justify-content-between">
-              <div>
+            {/* <div className="d-flex justify-content-between">
+              <div >
                 <h2 className="fw-bold">{post.summary}</h2>
-                <div className="text-muted mb-2">Posted {createdAgo}</div>
+                <div className="text-muted mb-2 text-end">Posted {createdAgo}</div>
+                <div className="text-muted">By <strong>{post.author}</strong></div>
+                <div className="text-muted">Views: {post.views || 0}</div>
               </div>
               {(isAuthor || isInstructor) && (
                 <div className="d-flex align-items-start gap-2">
@@ -148,8 +232,48 @@ export default function ViewPost({ onReplyClick }: { onReplyClick: () => void })
                   </Dropdown>
                 </div>
               )}
-            </div>
+            </div> <br />
             <div dangerouslySetInnerHTML={{ __html: post.details }} />
+            <div className="mt-3">
+              {postFolders.map((folder: Folder) => (
+                <span key={folder._id} className="badge rounded-pill bg-secondary me-2">
+                  {folder.name}
+                </span>
+              ))}
+            </div> */}
+            <div className="d-flex justify-content-between align-items-start">
+              {/* Left side: Title and content */}
+              <div className="flex-grow-1">
+                <h2 className="fw-bold">{post.summary}</h2> <br />
+                <div dangerouslySetInnerHTML={{ __html: post.details }} /> <br />
+                <div className="mt-3">
+                  {postFolders.map((folder: Folder) => (
+                    <span key={folder._id} className="badge rounded-pill bg-secondary me-2">
+                      {folder.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right side: Meta info and buttons */}
+              <div className="text-end ms-3" style={{ minWidth: "160px" }}>
+                {(isAuthor || isInstructor) && (
+                  <div className="d-flex align-items-start gap-2 mb-2">
+                    <Button variant="outline-primary" size="sm" className="me-1" onClick={() => setIsEditingPost(true)}>Edit</Button>
+                    <Dropdown>
+                      <Dropdown.Toggle variant="outline-secondary" size="sm">Actions</Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => setIsEditingPost(true)}>Edit</Dropdown.Item>
+                        <Dropdown.Item onClick={() => dispatch(deletePost(post._id) as any)} className="text-danger">Delete</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>
+                )}
+                <div className="text-muted">Posted {createdAgo}</div>
+                <div className="text-muted">By {post.author}</div>
+                <div className="text-muted">Views: {post.views?.length || 0}</div>
+              </div>
+            </div>
           </>
         )}
       </div>
@@ -181,7 +305,34 @@ export default function ViewPost({ onReplyClick }: { onReplyClick: () => void })
                     <strong>{a.authorName}</strong>
                     <small>{formatDistanceToNow(new Date(a.createdAt), { addSuffix: true })}</small>
                   </div>
-                  <div className="mt-2" dangerouslySetInnerHTML={{ __html: a.content }} />
+                  {/* <div className="mt-2" dangerouslySetInnerHTML={{ __html: a.content }} /> */}
+                  {editingAnswerId === a._id ? (
+                    <>
+                      <ReactQuill value={composerContent} onChange={setComposerContent} />
+                      <div className="mt-2">
+                        <Button
+                          size="sm"
+                          className="me-2"
+                          onClick={handleSubmit}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline-secondary"
+                          onClick={() => {
+                            setEditingAnswerId(null)
+                            setComposerContent("")
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="mt-2" dangerouslySetInnerHTML={{ __html: a.content }} />
+                  )}
+
                   {(currentUser._id === a.author || isInstructor) && (
                     <Dropdown className="mt-2">
                       <Dropdown.Toggle variant="link" size="sm">Actions</Dropdown.Toggle>
@@ -193,6 +344,7 @@ export default function ViewPost({ onReplyClick }: { onReplyClick: () => void })
                       </Dropdown.Menu>
                     </Dropdown>
                   )}
+                  <AnswerDiscussions answerId={a._id} currentUser={currentUser} />
                 </div>
               ))}
 
@@ -259,7 +411,33 @@ export default function ViewPost({ onReplyClick }: { onReplyClick: () => void })
                     <strong>{a.authorName}</strong>
                     <small>{formatDistanceToNow(new Date(a.createdAt), { addSuffix: true })}</small>
                   </div>
-                  <div className="mt-2" dangerouslySetInnerHTML={{ __html: a.content }} />
+                  {/* <div className="mt-2" dangerouslySetInnerHTML={{ __html: a.content }} /> */}
+                  {editingAnswerId === a._id ? (
+                    <>
+                      <ReactQuill value={composerContent} onChange={setComposerContent} />
+                      <div className="mt-2">
+                        <Button
+                          size="sm"
+                          className="me-2"
+                          onClick={handleSubmit}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline-secondary"
+                          onClick={() => {
+                            setEditingAnswerId(null)
+                            setComposerContent("")
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="mt-2" dangerouslySetInnerHTML={{ __html: a.content }} />
+                  )}
                   {isInstructor && (
                     <Dropdown className="mt-2">
                       <Dropdown.Toggle variant="link" size="sm">Actions</Dropdown.Toggle>
@@ -271,6 +449,7 @@ export default function ViewPost({ onReplyClick }: { onReplyClick: () => void })
                       </Dropdown.Menu>
                     </Dropdown>
                   )}
+                  <AnswerDiscussions answerId={a._id} currentUser={currentUser} />
                 </div>
               ))}
 

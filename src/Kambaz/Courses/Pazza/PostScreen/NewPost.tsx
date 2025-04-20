@@ -123,7 +123,7 @@ export default function NewPost({ onCancel }: { onCancel: () => void }) {
         type: postType,
         summary,
         details,
-        author: currentUser._id,
+        author: currentUser.firstName + " " + currentUser.lastName,
         authorRole: currentUser.role,
         course: cid,
         folders: selectedFolders,
@@ -131,7 +131,7 @@ export default function NewPost({ onCancel }: { onCancel: () => void }) {
         visibleTo: visibility === "SELECTED_USERS" ? selectedUsers : [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        views: [currentUser._id],
+        // views: [],
         answers: [],
       }
 

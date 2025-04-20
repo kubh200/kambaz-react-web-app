@@ -47,6 +47,16 @@ export const deletePost = async (postId: string) => {
   return response.data
 }
 
+export const fetchPostById = async (postId: string) => {
+  const response = await axios.get(`${PAZZA_API}/posts/${postId}`);
+  return response.data;
+};
+
+export const incrementPostView = async (postId: string) => {
+  console.log("Increment view hit for post", postId); // 👈 Add this
+  await axiosWithCredentials.put(`${REMOTE_SERVER}/api/pazza/posts/${postId}/view`);
+};
+
 // Answers
 export const createAnswer = async (answer: any) => {
   const response = await axios.post(
@@ -110,36 +120,38 @@ export const deleteFolder = async (folderId: string) => {
 }
 
 // Discussions
-export const createDiscussion = async (discussion: any) => {
-  const response = await axios.post(`${PAZZA_API}/discussions`, discussion)
-  return response.data
-}
+export const fetchDiscussionsForAnswer = async (answerId: string) => {
+  const { data } = await axios.get(`${PAZZA_API}/answers/${answerId}/discussions`);
+  return data;
+};
 
-export const updateDiscussion = async (discussion: any) => {
-  const response = await axios.put(`${PAZZA_API}/discussions/${discussion.discussionId}`, discussion)
-  return response.data
-}
+export const createDiscussion = async (answerId: string, discussion: any) => {
+  const { data } = await axios.post(`${PAZZA_API}/answers/${answerId}/discussions`, discussion);
+  return data;
+};
+
+export const updateDiscussion = async (discussionId: string, updates: any) => {
+  const { data } = await axios.put(`${PAZZA_API}/discussions/${discussionId}`, updates);
+  return data;
+};
 
 export const deleteDiscussion = async (discussionId: string) => {
-  const response = await axios.delete(`${PAZZA_API}/discussions/${discussionId}`)
-  return response.data
-}
+  await axios.delete(`${PAZZA_API}/discussions/${discussionId}`);
+};
 
-export const toggleDiscussionResolved = async (data: { discussionId: string; resolved: boolean }) => {
-  const response = await axios.put(`${PAZZA_API}/discussions/${data.discussionId}/resolved`, {
-    resolved: data.resolved,
-  })
-  return response.data
-}
+export const toggleDiscussionResolved = async ({ discussionId, resolved }: { discussionId: string, resolved: boolean }) => {
+  const { data } = await axios.put(`${PAZZA_API}/discussions/${discussionId}/resolved`, { resolved });
+  return data;
+};
 
 // Replies
-export const createReply = async (reply: any) => {
-  const response = await axios.post(`${PAZZA_API}/answers/${reply.answer}/replies`, reply);
+export const createReply = async (discussionId: string, reply: any) => {
+  const response = await axios.post(`${PAZZA_API}/discussions/${discussionId}/replies`, reply);
   return response.data;
 };
 
-export const fetchRepliesForAnswer = async (answerId: string) => {
-  const response = await axios.get(`${PAZZA_API}/answers/${answerId}/replies`);
+export const fetchRepliesForDiscussion = async (discussionId: string) => {
+  const response = await axios.get(`${PAZZA_API}/discussions/${discussionId}/replies`);
   return response.data;
 };
 
