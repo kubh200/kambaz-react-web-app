@@ -119,6 +119,7 @@ import ViewPost from "./PostScreen/ViewPost"
 import { fetchFolders } from "./reducer"
 import { Container, Row, Col } from "react-bootstrap"
 import "./pazza.css"
+import ManageClass from "./ManageClass"; 
 
 export default function Pazza() {
   const { cid } = useParams()
@@ -157,6 +158,7 @@ export default function Pazza() {
           </Col> */}
           <Col className="h-100 overflow-auto">
             <Routes>
+              {/* <Route path="posts/:postId" element={<ViewPost onReplyClick={() => {}} />} /> */}
               <Route
                 path="/"
                 element={
@@ -167,6 +169,7 @@ export default function Pazza() {
                 }
               />
               <Route path="posts/:postId" element={<ViewPost onReplyClick={() => {}} />} />
+              <Route path="ManageClass" element={<ManageClass />} />
             </Routes>
           </Col>
         </Row>

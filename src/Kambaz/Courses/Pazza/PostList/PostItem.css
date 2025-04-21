@@ -1,0 +1,9 @@
+.pazza-post-item {
+    border-left: 4px solid transparent;
+    transition: background-color 0.2s ease, border-left-color 0.2s ease;
+  }
+  
+  .pazza-post-item.selected-post {
+    background-color: #e9f2ff; /* Light blue like Piazza */
+    border-left-color: #2a7bdc; /* Accent blue border */
+  }

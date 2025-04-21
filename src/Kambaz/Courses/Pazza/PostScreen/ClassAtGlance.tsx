@@ -1,185 +1,203 @@
-// "use client"
-
-// import { useSelector } from "react-redux"
-// // import { useParams } from "react-router-dom"
+// import { useEffect, useState } from "react";
+// import { useSelector } from "react-redux";
+// import { useParams } from "react-router-dom";
+// import * as client from "../../client";
+// import { FaCheckCircle } from "react-icons/fa";
 
 // export default function ClassAtGlance() {
-//   const { posts } = useSelector((state: any) => state.pazzaReducer)
-//   const { currentUser } = useSelector((state: any) => state.accountReducer)
-// //   const { cid } = useParams()
+//   const { posts } = useSelector((state: any) => state.pazzaReducer);
+//   const { currentUser } = useSelector((state: any) => state.accountReducer);
+//   const { cid } = useParams();
+//   const [enrolledUsers, setEnrolledUsers] = useState<any[]>([]);
 
-//   // Calculate statistics
-//   const totalPosts = posts.length
+//   useEffect(() => {
+//     const loadUsers = async () => {
+//       if (!cid) return;
+//       try {
+//         const users = await client.findUsersForCourse(cid);
+//         setEnrolledUsers(users.filter((u: any) => u !== null && u._id));
+//       } catch (err) {
+//         console.error("Error loading enrolled users", err);
+//       }
+//     };
+//     loadUsers();
+//   }, [cid]);
 
-//   const unreadPosts = posts.filter((post: any) => !post.views.includes(currentUser._id)).length
+//   const totalPosts = posts.length;
+//   const unreadPosts = posts.filter((p: any) => !p.views.includes(currentUser?._id)).length;
+//   const unansweredPosts = posts.filter((p: any) => p.type === "QUESTION" && p.answers.length === 0).length;
 
-//   const unansweredPosts = posts.filter((post: any) => post.type === "QUESTION" && post.answers.length === 0).length
-
-//   const instructorResponses = posts.reduce((count: number, post: any) => {
-//     return count + post.answers.filter((answer: any) => answer.authorRole === "FACULTY").length
-//   }, 0)
-
-//   const studentResponses = posts.reduce((count: number, post: any) => {
-//     return count + post.answers.filter((answer: any) => answer.authorRole !== "FACULTY").length
-//   }, 0)
-
-//   // Get enrolled students count (this would need to be fetched from the API)
-//   const enrolledStudents = 25 // Placeholder value
+//   const instructorResponses = posts.reduce(
+//     (count: number, p: any) =>
+//       count + (p.answers?.filter((a: any) => a.authorRole === "FACULTY").length || 0),
+//     0
+//   );
+  
+//   const studentResponses = posts.reduce(
+//     (count: number, p: any) =>
+//       count + (p.answers?.filter((a: any) => a.authorRole === "STUDENT").length || 0),
+//     0
+//   );
+//   console.log("Sample post:", posts[0])
 
 //   return (
-//     <div className="pazza-class-glance">
-//       <h2>Class at a Glance</h2>
+//     <div className="container mt-4">
+//       <h3>Class at a Glance</h3>
+//       <p className="text-muted">Updated just now. <a href="#">Reload</a></p>
 
-//       <div className="pazza-stats-container">
-//         <div className="pazza-stat-card">
-//           <div className="pazza-stat-value">{unreadPosts > 0 ? unreadPosts : "No"}</div>
-//           <div className="pazza-stat-label">unread posts</div>
+//       <div className="row g-3">
+//         <div className="col-6 col-md-4">
+//           <div className="alert alert-success d-flex align-items-center" role="alert">
+//             <FaCheckCircle className="me-2" />
+//             {unreadPosts === 0 ? "no unread posts" : `${unreadPosts} unread posts`}
+//           </div>
 //         </div>
 
-//         <div className="pazza-stat-card">
-//           <div className="pazza-stat-value">{unansweredPosts > 0 ? unansweredPosts : "No"}</div>
-//           <div className="pazza-stat-label">unanswered posts</div>
+//         <div className="col-6 col-md-4">
+//           <div className="alert alert-success d-flex align-items-center" role="alert">
+//             <FaCheckCircle className="me-2" />
+//             {unansweredPosts === 0 ? "no unanswered questions" : `${unansweredPosts} unanswered posts`}
+//           </div>
 //         </div>
 
-//         <div className="pazza-stat-card">
-//           <div className="pazza-stat-value">{totalPosts}</div>
-//           <div className="pazza-stat-label">total posts</div>
+//         <div className="col-6 col-md-4">
+//           <div className="card p-3">
+//             <strong>{totalPosts}</strong>
+//             <div className="text-muted">total posts</div>
+//           </div>
 //         </div>
 
-//         <div className="pazza-stat-card">
-//           <div className="pazza-stat-value">{instructorResponses}</div>
-//           <div className="pazza-stat-label">instructor responses</div>
+//         <div className="col-6 col-md-4">
+//           <div className="card p-3">
+//             <strong>{instructorResponses}</strong>
+//             <div className="text-muted">instructor responses</div>
+//           </div>
 //         </div>
 
-//         <div className="pazza-stat-card">
-//           <div className="pazza-stat-value">{studentResponses}</div>
-//           <div className="pazza-stat-label">student responses</div>
+//         <div className="col-6 col-md-4">
+//           <div className="card p-3">
+//             <strong>{studentResponses}</strong>
+//             <div className="text-muted">student responses</div>
+//           </div>
 //         </div>
 
-//         <div className="pazza-stat-card">
-//           <div className="pazza-stat-value">{enrolledStudents}</div>
-//           <div className="pazza-stat-label">students enrolled</div>
+//         <div className="col-6 col-md-4">
+//           <div className="card p-3">
+//             <strong>{enrolledUsers.length}</strong>
+//             <div className="text-muted">students enrolled</div>
+//           </div>
 //         </div>
 //       </div>
 //     </div>
-//   )
+//   );
 // }
-
-"use client"
-
-import { useState } from "react"
-import { useSelector } from "react-redux"
-import { useParams } from "react-router-dom"
-import { FaCheckCircle } from "react-icons/fa"
-import { IoClose } from "react-icons/io5"
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import * as client from "../client";
+import { FaCheckCircle } from "react-icons/fa";
 
 export default function ClassAtGlance() {
-  const { posts } = useSelector((state: any) => state.pazzaReducer)
-  const { currentUser } = useSelector((state: any) => state.accountReducer)
-  const { cid } = useParams()
-  const [showAiNotice, setShowAiNotice] = useState(true)
+  const { posts } = useSelector((state: any) => state.pazzaReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { cid } = useParams();
+  const [enrolledUsers, setEnrolledUsers] = useState<any[]>([]);
+  const [instructorResponses, setInstructorResponses] = useState(0);
+  const [studentResponses, setStudentResponses] = useState(0);
 
-  // Calculate statistics
-  const totalPosts = posts.length
-  const unreadPosts = posts.filter((post: any) => !post.views.includes(currentUser?._id)).length
-  const unansweredPosts = posts.filter((post: any) => post.type === "QUESTION" && post.answers.length === 0).length
-  const unansweredFollowups = posts.reduce((count: number, post: any) => {
-    const unansweredDiscussions = post.discussions?.filter((d: any) => !d.resolved)?.length || 0
-    return count + unansweredDiscussions
-  }, 0)
+  useEffect(() => {
+    const loadUsers = async () => {
+      if (!cid) return;
+      try {
+        const users = await client.fetchAnswersForPost(cid);
+        setEnrolledUsers(users.filter((u: any) => u !== null && u._id));
+      } catch (err) {
+        console.error("Error loading enrolled users", err);
+      }
+    };
+    loadUsers();
+  }, [cid]);
 
-  const instructorResponses = posts.reduce((count: number, post: any) => {
-    return count + (post.answers?.filter((answer: any) => answer.authorRole === "FACULTY")?.length || 0)
-  }, 0)
+  useEffect(() => {
+    const loadResponses = async () => {
+      if (!cid) return;
+      try {
+        const answersPerPost = await Promise.all(
+          posts.map((post: any) => client.fetchAnswersForPost(post._id))
+        );
 
-  const studentResponses = posts.reduce((count: number, post: any) => {
-    return count + (post.answers?.filter((answer: any) => answer.authorRole !== "FACULTY")?.length || 0)
-  }, 0)
+        const allAnswers = answersPerPost.flat();
 
-  // Get enrolled students count (this would need to be fetched from the API)
-  const enrolledStudents = 108
-  const totalEstimated = 100
+        const instructorCount = allAnswers.filter(
+          (a: any) => a.authorRole === "FACULTY" || a.authorRole === "TA"
+        ).length;
+
+        const studentCount = allAnswers.filter(
+          (a: any) => a.authorRole === "STUDENT"
+        ).length;
+
+        setInstructorResponses(instructorCount);
+        setStudentResponses(studentCount);
+      } catch (err) {
+        console.error("Error loading answers", err);
+      }
+    };
+
+    loadResponses();
+  }, [cid, posts]);
+
+  const totalPosts = posts.length;
+  const unreadPosts = posts.filter((p: any) => !p.views.includes(currentUser?._id)).length;
+  const unansweredPosts = posts.filter((p: any) => p.type === "QUESTION" && p.answers.length === 0).length;
 
   return (
-    <div className="pazza-class-glance">
-      <h2>Class at a Glance</h2>
-      <div className="pazza-updated-info">
-        Updated 10 seconds ago. <span className="pazza-reload-link">Reload</span>
-      </div>
+    <div className="container mt-4">
+      <h3>Class at a Glance</h3>
+      <p className="text-muted">Updated just now. <a href="#">Reload</a></p>
 
-      <div className="pazza-stats-container">
-        <div className="pazza-stat-row">
-          <div className="pazza-stat-icon success">
-            <FaCheckCircle />
+      <div className="row g-3">
+        <div className="col-6 col-md-4">
+          <div className="alert alert-success d-flex align-items-center" role="alert">
+            <FaCheckCircle className="me-2" />
+            {unreadPosts === 0 ? "no unread posts" : `${unreadPosts} unread posts`}
           </div>
-          <div className="pazza-stat-label">no unread posts</div>
         </div>
 
-        <div className="pazza-stat-row">
-          <div className="pazza-stat-icon success">
-            <FaCheckCircle />
+        <div className="col-6 col-md-4">
+          <div className="alert alert-success d-flex align-items-center" role="alert">
+            <FaCheckCircle className="me-2" />
+            {unansweredPosts === 0 ? "no unanswered questions" : `${unansweredPosts} unanswered posts`}
           </div>
-          <div className="pazza-stat-label">no unanswered questions</div>
         </div>
 
-        <div className="pazza-stat-row">
-          <div className="pazza-stat-icon success">
-            <FaCheckCircle />
+        <div className="col-6 col-md-4">
+          <div className="card p-3">
+            <strong>{totalPosts}</strong>
+            <div className="text-muted">total posts</div>
           </div>
-          <div className="pazza-stat-label">no unanswered followups</div>
         </div>
 
-        <div className="pazza-stat-row">
-          <div className="pazza-stat-value">license status</div>
-          <div className="pazza-stat-label">active instructor license</div>
+        <div className="col-6 col-md-4">
+          <div className="card p-3">
+            <strong>{instructorResponses}</strong>
+            <div className="text-muted">instructor responses</div>
+          </div>
         </div>
 
-        <div className="pazza-stat-row">
-          <div className="pazza-stat-value">90</div>
-          <div className="pazza-stat-label">total contributions</div>
+        <div className="col-6 col-md-4">
+          <div className="card p-3">
+            <strong>{studentResponses}</strong>
+            <div className="text-muted">student responses</div>
+          </div>
         </div>
 
-        <div className="pazza-stat-row">
-          <div className="pazza-stat-value">0</div>
-          <div className="pazza-stat-label">instructor responses</div>
-        </div>
-
-        <div className="pazza-stat-row">
-          <div className="pazza-stat-value">0</div>
-          <div className="pazza-stat-label">students' responses</div>
-        </div>
-
-        <div className="pazza-stat-row">
-          <div className="pazza-stat-value">0ms</div>
-          <div className="pazza-stat-label">avg. response time</div>
+        <div className="col-6 col-md-4">
+          <div className="card p-3">
+            <strong>{enrolledUsers.length}</strong>
+            <div className="text-muted">students enrolled</div>
+          </div>
         </div>
       </div>
-
-      <div className="pazza-enrollment-section">
-        <div className="pazza-enrollment-header">
-          <div className="pazza-enrollment-title">Student Enrollment</div>
-          <div className="pazza-enrollment-edit">Edit</div>
-        </div>
-        <div className="pazza-enrollment-count">
-          {enrolledStudents} enrolled out of {totalEstimated} (estimated)
-        </div>
-      </div>
-
-      {showAiNotice && (
-        <div className="pazza-ai-notice">
-          <div className="pazza-ai-close" onClick={() => setShowAiNotice(false)}>
-            <IoClose />
-          </div>
-          <h3>Introducing AI-Generated Summaries for Followups and Folders</h3>
-          <p>Dear Instructor,</p>
-          <p>
-            We are pleased to introduce an optional AI-powered summarization feature to help your students get more out
-            of discussions, especially in larger classes. This feature is disabled by default and per your institution's
-            policies, you can enable using this button, a summary of the following comments will appear for everyone
-            that can view the post. An updated summary can be generated once new followup comments are made.
-          </p>
-        </div>
-      )}
     </div>
-  )
+  );
 }

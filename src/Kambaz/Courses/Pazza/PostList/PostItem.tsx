@@ -80,6 +80,7 @@
 import { formatDistanceToNow } from "date-fns"
 import { ListGroup } from "react-bootstrap"
 
+
 interface PostItemProps {
   post: any
   isSelected: boolean
@@ -91,6 +92,7 @@ export default function PostItem({
   isSelected,
   onClick,
 }: PostItemProps) {
+  
   console.log("Rendering PostItem", post._id, "Selected:", isSelected);
   const rawDetails = post.details ?? post.content ?? ""
   const rawSummary = post.summary ?? rawDetails
@@ -107,6 +109,9 @@ export default function PostItem({
       // permanently apply Bootstrap's primary background & white text when selected
       className={`py-2 ${isSelected ? "bg-primary text-white" : ""}`}
       style={{ cursor: "pointer" }}
+      // active={isSelected}
+      // // variant={isSelected ? "primary" : undefined}
+      // className="py-2 px-3"
     >
       <div className="d-flex justify-content-between">
         <strong>{truncateText(rawSummary, 80)}</strong>

@@ -1,12 +1,13 @@
 // PostsList.tsx
 import { useEffect, useMemo, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Button, Form, InputGroup } from "react-bootstrap"
 import { BsCaretLeft, BsCaretRight, BsPlus, BsSearch } from "react-icons/bs"
 import PostsAccordion from "./PostAccordion"
 import { groupPostsByDateCategory } from "../utils"
 import { fetchPosts, setSelectedPost } from "../reducer"
+
 
 function useGroupedPosts(posts: any[], folder: string | null, search: string) {
   return useMemo(() => {
@@ -43,9 +44,13 @@ export default function PostsList({
   const [searchQuery, setSearchQuery] = useState("")
   const dispatch = useDispatch()
   const { cid } = useParams<{ cid: string }>()
-  const { posts, selectedPost } = useSelector((s: any) => s.pazzaReducer)
+  // const { cid, postId } = useParams<{ cid: string; postId?: string }>();
+  // const { posts, selectedPost } = useSelector((s: any) => s.pazzaReducer)
+  const { posts } = useSelector((s: any) => s.pazzaReducer);
   const navigate = useNavigate()
-
+  const location = useLocation();
+  const match = location.pathname.match(/\/posts\/([^/]+)/);
+  const postId = match ? match[1] : null;
   // normalize legacy `post.folder` → `post.folders`
   const normalizedPosts = useMemo(
     () =>
@@ -65,10 +70,15 @@ export default function PostsList({
   useEffect(() => {
     if (cid) dispatch(fetchPosts(cid) as any)
   }, [cid, dispatch])
+  // useEffect(() => {
+  //   if (!postId) {
+  //     dispatch(setSelectedPost(null));
+  //   }
+  // }, [postId, dispatch]);
 
   const handlePostClick = (postId: string) => {
-    dispatch(setSelectedPost(postId))
-    navigate(`/Kambaz/Courses/${cid}/Pazza/posts/${postId}`, { replace: true })
+    // dispatch(setSelectedPost(postId))
+    navigate(`/Kambaz/Courses/${cid}/Pazza/posts/${postId}`)
   }
 
   const handleNewPostClick = () => {
@@ -76,6 +86,8 @@ export default function PostsList({
     navigate(`/Kambaz/Courses/${cid}/Pazza`); // Navigate to base Pazza screen
     onNewPostClick(); // Optional: toggle composer if needed
   };
+
+  console.log("Current route postId:", postId);
 
   return (
     <div className="d-flex h-100">
@@ -157,7 +169,7 @@ export default function PostsList({
           ) : (
             <PostsAccordion
               groups={groups}
-              selectedPost={selectedPost}
+              selectedPost={postId ?? null}
               onPostClick={handlePostClick}
             />
           )}

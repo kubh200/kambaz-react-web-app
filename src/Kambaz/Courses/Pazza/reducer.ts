@@ -171,10 +171,10 @@ export const toggleDiscussionResolved = createAsyncThunk<any, { discussionId: st
   }
 );
 
-interface ToggleResolvedParams {
-  discussionId: string
-  resolved: boolean
-}
+// interface ToggleResolvedParams {
+//   discussionId: string
+//   resolved: boolean
+// }
 
 interface CreateReplyParams {
   discussionId: string;

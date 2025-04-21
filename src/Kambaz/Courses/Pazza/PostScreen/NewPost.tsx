@@ -42,6 +42,9 @@ export default function NewPost({ onCancel }: { onCancel: () => void }) {
   const [sendEmail, setSendEmail] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
+  const isFaculty = currentUser?.role === "FACULTY"
+
+
   const modules = {
     toolbar: [
       [{ 'header': [1, 2, 3, false] }],
@@ -147,7 +150,7 @@ export default function NewPost({ onCancel }: { onCancel: () => void }) {
   }
 
   const handleManageFolders = () => {
-    navigate(`/Kambaz/courses/${cid}/pazza/manage-folders`)
+    navigate(`/Kambaz/courses/${cid}/pazza/ManageClass`)
   }
 
   const handleVisibilityChange = (newVisibility: "ENTIRE_CLASS" | "SELECTED_USERS") => {
@@ -247,16 +250,18 @@ export default function NewPost({ onCancel }: { onCancel: () => void }) {
                 </Badge>
               ))}
             </div>
-            <div>
-              <Button 
-                variant="link" 
-                className="p-0 text-decoration-none" 
-                onClick={handleManageFolders}
-                style={{ fontSize: '0.875rem' }}
-              >
-                Manage and reorder folders
-              </Button>
-            </div>
+            {isFaculty && (
+              <div>
+                <Button 
+                  variant="link" 
+                  className="p-0 text-decoration-none" 
+                  onClick={handleManageFolders}
+                  style={{ fontSize: '0.875rem' }}
+                >
+                  Manage and reorder folders
+                </Button>
+              </div>
+            )}
           </div>
           {errors.folders && <div className="text-danger">{errors.folders}</div>}
         </Form.Group>

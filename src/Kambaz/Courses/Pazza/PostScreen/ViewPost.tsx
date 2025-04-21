@@ -11,13 +11,12 @@ import {
   deleteAnswer,
   deletePost,
   updatePost,
-  clearSelectedPost
 } from "../reducer"
 import { formatDistanceToNow } from "date-fns"
 import * as client from "../client" // 🔧 Added for fetching answers
 import AnswerDiscussions from "./AnswerDiscussions";
 
-export default function ViewPost({ onReplyClick }: { onReplyClick: () => void }) {
+export default function ViewPost({ }: { onReplyClick: () => void }) {
   const dispatch = useDispatch()
   // const { selectedPost, posts, folders } = useSelector((s: any) => s.pazzaReducer)
   const { posts, folders } = useSelector((s: any) => s.pazzaReducer)
