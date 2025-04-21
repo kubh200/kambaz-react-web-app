@@ -180,6 +180,21 @@
     "course": "RS104"
   },
   {
+    "_id": "rs104_hw4",
+    "name": "hw4",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs104_hw5",
+    "name": "hw5",
+    "course": "RS104"
+  },
+  {
+    "_id": "rs104_hw6",
+    "name": "hw6",
+    "course": "RS104"
+  },
+  {
     "_id": "rs104_project",
     "name": "project",
     "course": "RS104"
@@ -217,6 +232,21 @@
   {
     "_id": "rs105_hw3",
     "name": "hw3",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_hw4",
+    "name": "hw4",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_hw5",
+    "name": "hw5",
+    "course": "RS105"
+  },
+  {
+    "_id": "rs105_hw6",
+    "name": "hw6",
     "course": "RS105"
   },
   {
@@ -260,6 +290,21 @@
     "course": "RS106"
   },
   {
+    "_id": "rs106_hw4",
+    "name": "hw4",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs106_hw5",
+    "name": "hw5",
+    "course": "RS106"
+  },
+  {
+    "_id": "rs106_hw6",
+    "name": "hw6",
+    "course": "RS106"
+  },
+  {
     "_id": "rs106_project",
     "name": "project",
     "course": "RS106"
@@ -300,6 +345,21 @@
     "course": "RS107"
   },
   {
+    "_id": "rs107_hw4",
+    "name": "hw4",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs107_hw5",
+    "name": "hw5",
+    "course": "RS107"
+  },
+  {
+    "_id": "rs107_hw6",
+    "name": "hw6",
+    "course": "RS107"
+  },
+  {
     "_id": "rs107_project",
     "name": "project",
     "course": "RS107"
@@ -337,6 +397,21 @@
   {
     "_id": "rs108_hw3",
     "name": "hw3",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_hw4",
+    "name": "hw4",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_hw5",
+    "name": "hw5",
+    "course": "RS108"
+  },
+  {
+    "_id": "rs108_hw6",
+    "name": "hw6",
     "course": "RS108"
   },
   {
