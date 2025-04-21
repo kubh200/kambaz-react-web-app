@@ -28,7 +28,7 @@ export const fetchCourseUsers = async (courseId: string) => {
 
 // Posts
 export const fetchPosts = async (courseId: string) => {
-  const response = await axios.get(`${PAZZA_API}/courses/${courseId}/posts`)
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/courses/${courseId}/posts`)
   return response.data
 }
 
