@@ -109,8 +109,9 @@ export default function ClassAtGlance() {
     const loadUsers = async () => {
       if (!cid) return;
       try {
-        const users = await client.fetchAnswersForPost(cid);
-        setEnrolledUsers(users.filter((u: any) => u !== null && u._id));
+        const users = await client.fetchCourseUsers(cid);
+        // setEnrolledUsers(users.filter((u: any) => u !== null && u._id));
+        setEnrolledUsers(users.filter((u: any) => u?.role === "STUDENT"));
       } catch (err) {
         console.error("Error loading enrolled users", err);
       }
